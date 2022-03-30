@@ -1,0 +1,12 @@
+node_modules
+*/.env
+
+*/certs
+*/certs
+server/.github/workflows/npm.yml
+server/.github/workflows/actions-runner/*
+server/services/certificates/*.pfx
+server/services/certificates/*.crt
+server/services/certificates/*.csr
+server/services/certificates/*.key
+open_machine.sh

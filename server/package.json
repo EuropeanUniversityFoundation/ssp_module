@@ -1,0 +1,24 @@
+{
+  "name": "ssp_backoffice",
+  "version": "1.0.0",
+  "description": "The Backoffice operations of the EDSSI SSP module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon server.js"
+  },
+  "keywords": [
+    "SSP"
+  ],
+  "author": "Bruno Pereira",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "mongodb": "^4.4.1",
+    "node-rsa": "^1.1.1",
+    "nodemon": "^2.0.15",
+    "postmark": "^3.0.1"
+  }
+}
