@@ -5,29 +5,30 @@ var DatabaseVariables = require("../model/constants/database")
 
 module.exports = {
 
-    async InsertCodePair(emailCodePair) {
+    async InsertSSP(data, callback) {
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;
 
             var dbo = db.db(DatabaseVariables.DBNAME);
 
-            dbo.collection(DatabaseVariables.TABLE_SSP_CODES).insertOne(emailCodePair, function (err, res) {
+            dbo.collection(DatabaseVariables.TABLE_SSP_PROVIDERS).insertOne(data, function (err, res) {
                 if (err) throw err;
                 console.log("1 document inserted");
                 db.close();
+                return callback(res);
             });
         });
     },
 
-    async GetExpiration(code, callback) {
+    async GetProvider(domain, callback) {
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;
 
             var dbo = db.db(DatabaseVariables.DBNAME);
 
-            var query = { _id: code }
+            var query = { domain: domain }
 
-            dbo.collection(DatabaseVariables.TABLE_SSP_CODES).findOne(query, function (err, res) {
+            dbo.collection(DatabaseVariables.TABLE_SSP_PROVIDERS).findOne(query, function (err, res) {
                 if (err) throw err;
                 console.log("1 document fetched");
                 db.close();
@@ -36,20 +37,20 @@ module.exports = {
         });
     },
 
-    async DeleteCode(dto) {
+    async GetProviders(callback) {
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;
 
             var dbo = db.db(DatabaseVariables.DBNAME);
 
-            dbo.collection(DatabaseVariables.TABLE_SSP_CODES).deleteOne(dto, function (err, res) {
+            dbo.collection(DatabaseVariables.TABLE_SSP_PROVIDERS).find({}).toArray(function (err, res) {
                 if (err) throw err;
-                console.log("1 document deleted");
+                console.log("1 document fetched");
                 db.close();
+                return callback(res);
             });
         });
     }
-
 
 
 }
