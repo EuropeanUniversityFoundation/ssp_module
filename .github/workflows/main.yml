@@ -1,0 +1,28 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+
+jobs:
+
+  push:
+
+    runs-on: [self-hosted, dev]
+    if: github.event_name == 'push'
+
+    steps:
+    - uses: actions/checkout@v2
+   #   run: git pull origin dev
+
+    - name: Build the Docker image
+      run: sudo docker-compose build
+
+    - name: Check Files
+      run: ls -la
+
+    - name: Restat/recreate both containers
+      run:  cd /home/centos/ssp_module && docker-compose up -d --force-recreate
