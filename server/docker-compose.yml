@@ -1,0 +1,33 @@
+version: '2.2'
+services:
+
+  # nginx:
+  #   depends_on:
+  #     - sspmodule
+  #   restart: always
+  #   container_name: edssiregistrationportalnginx
+  #   build: nginx
+  #   volumes:
+  #     - /home/centos/edssi_registration_portal/certs:/etc/nginx/certs/:ro
+  #     - /home/centos/edssi_registration_portal/client_certs:/etc/nginx/client_certs/:ro
+  #   ports:
+  #     - "443:443"
+  #   networks:
+  #     - proxynet
+
+  sspmodule:
+    build: server
+    container_name: sspmodule
+    network_mode: bridge
+    ports:
+      - "8553:8443"
+    volumes:
+      - /home/centos/ssp_module/.env:/app/.env
+    restart: always
+
+# networks:
+#   proxynet:
+#     name: custom_network
+#   my-proxy-net:
+#     external:
+#       name: custom_network
