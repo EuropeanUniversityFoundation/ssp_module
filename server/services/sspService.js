@@ -49,6 +49,7 @@ module.exports = {
         var email = dec.email;
 
         var readHTMLFile = function (path, callback) {
+            console.log(path);
             fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
                 if (err) {
                     callback(err);
@@ -56,6 +57,7 @@ module.exports = {
 
                 }
                 else {
+                    
                     callback(null, html);
                 }
             });
@@ -66,9 +68,7 @@ module.exports = {
             port: 25,
         });
 
-        console.log(__dirname);
-
-        readHTMLFile(__dirname + '../mailHTMLs/newRegistration.html', function (err, html) {
+        readHTMLFile(__dirname + '/mailHTMLs/newRegistration.html', function (err, html) {
             var template = handlebars.compile(html);
             var replacements = {
                 newCode: newCode
