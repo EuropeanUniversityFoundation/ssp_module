@@ -18,13 +18,22 @@ services:
   sspmodule:
     build: server
     container_name: sspmodule
+    network_mode: bridge
     ports:
       - "8553:8443"
     volumes:
       - /home/centos/ssp_module/server/.env:/app/.env
     restart: always
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: wiki-db
+    ports:
+      - 27017:27017
+    network_mode: bridge
+
 
 # networks:
 #   proxynet:
