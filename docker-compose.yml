@@ -18,7 +18,7 @@ services:
   sspmodule:
     build: server
     container_name: sspmodule
-    network_mode: bridge
+    network_mode: host
     ports:
       - "8553:8443"
     volumes:
