@@ -1,5 +1,7 @@
 var postmark = require("postmark");
 var fs = require("fs");
+const nodemailer = require('nodemailer');
+const handlebars = require('handlebars');
 
 const ResponseDTO = require("../dto/response")
 const SSPRegistrationCodeDTO = require("../dto/sspRegistrationCodeDTO")
@@ -41,38 +43,57 @@ module.exports = {
     },
 
     async sendRegistrationEmail(data, callback) {
-
-        var nodemailer = require('nodemailer');
-
-        // var dec = JSON.parse(Cryptography.decrypt(data))
         var dec = JSON.parse(data)
-
-        console.log(dec);
 
         var newCode = dec._id;
         var email = dec.email;
+
+        var readHTMLFile = function (path, callback) {
+            fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
+                if (err) {
+                    callback(err);
+                    throw err;
+
+                }
+                else {
+                    callback(null, html);
+                }
+            });
+        };
 
         var transporter = nodemailer.createTransport({
             host: 'mail.auth.gr',
             port: 25,
         });
 
-        var mailOptions = {
-            from: "no-reply@auth.gr",
-            to: email,
-            subject: 'Sending Email using Node.js',
-            text: 'That was easy!'
-        };
+        console.log(__dirname);
 
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
-        });
+        readHTMLFile(__dirname + '../mailHTMLs/newRegistration.html', function (err, html) {
+            var template = handlebars.compile(html);
+            var replacements = {
+                newCode: newCode
+            };
+            var htmlToSend = template(replacements);
 
-        return callback(true);
+            var mailOptions = {
+                from: "no-reply@auth.gr",
+                to: email,
+                subject: 'New Provider Registration',
+                html: htmlToSend
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+
+            return callback(true);
+        })
+
+
     },
 
     async validateRegistration(newCode, callback) {
