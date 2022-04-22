@@ -24,6 +24,8 @@ services:
     volumes:
       - /home/centos/ssp_module/server/.env:/app/.env
     restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 # networks:
 #   proxynet:
