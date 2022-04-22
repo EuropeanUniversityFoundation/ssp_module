@@ -18,7 +18,8 @@ services:
   sspmodule:
     build: server
     container_name: sspmodule
-    network_mode: bridge
+    networks:
+      - proxynet
     ports:
       - "8553:8443"
     volumes:
@@ -32,12 +33,12 @@ services:
     container_name: mongo-db
     ports:
       - 27017:27017
-    network_mode: bridge
+    networks:
+      - my-proxy-net
 
-
-# networks:
-#   proxynet:
-#     name: custom_network
-#   my-proxy-net:
-#     external:
-#       name: custom_network
+networks:
+  proxynet:
+    name: custom_network
+  my-proxy-net:
+    external:
+      name: custom_network
