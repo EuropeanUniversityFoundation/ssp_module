@@ -29,7 +29,7 @@ services:
 
   mongo:
     image: mongo:latest
-    container_name: wiki-db
+    container_name: mongo-db
     ports:
       - 27017:27017
     network_mode: bridge
