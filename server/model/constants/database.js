@@ -1,6 +1,6 @@
 module.exports = Object.freeze({
-    DBURL: "mongodb+srv://ssp:Sezcs580jhmfSg1z@cluster0.kinfa.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    DBNAME: "test",
+    DBURL: "mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb",
+    DBNAME: "ssp",
 
     TABLE_SSP_CODES: "ssp_codes",
     TABLE_SSP_PROVIDERS: "ssp_providers"
