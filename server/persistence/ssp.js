@@ -1,8 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 var DatabaseVariables = require("../model/constants/database")
 
-
-
 module.exports = {
 
     async InsertSSP(data, callback) {
