@@ -42,6 +42,8 @@ module.exports = {
 
     async sendRegistrationEmail(data, callback) {
 
+        var nodemailer = require('nodemailer');
+
         // var dec = JSON.parse(Cryptography.decrypt(data))
         var dec = JSON.parse(data)
 
@@ -50,17 +52,24 @@ module.exports = {
         var newCode = dec._id;
         var email = dec.email;
 
-        // Send an email:
-        var client = new postmark.ServerClient("051ab111-0347-48b8-9085-bb522588c596");
+        var transporter = nodemailer.createTransport({
+            host: 'mail.auth.gr',
+            port: 25,
+        });
 
-        client.sendEmailWithTemplate({
-            TemplateAlias: "registration",
-            TemplateId: 27495738,
-            TemplateModel: {
-                newCode,
-            },
-            "From": "dashboard@uni-foundation.eu",
-            "To": email,
+        var mailOptions = {
+            from: "no-reply@auth.gr",
+            to: email,
+            subject: 'Sending Email using Node.js',
+            text: 'That was easy!'
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
         });
 
         return callback(true);
