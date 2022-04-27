@@ -17,7 +17,10 @@ const URLConstants = require("../model/constants/urls")
 
 module.exports = {
 
-    async generateProviderCodeForRegistrationLink(email, callback) {
+    async generateProviderCodeForRegistrationLink(body, callback) {
+
+        var provider_email = body.provider_email;
+        var requester_email = body.requester_email;
 
         var newCode = '';
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -28,7 +31,7 @@ module.exports = {
         }
         try {
 
-            const pair = new SSPRegistrationCodeDTO(newCode, email).toJSON();
+            const pair = new SSPRegistrationCodeDTO(newCode, provider_email, requester_email).toJSON();
 
             await SSPRegistrationCodePersistence.InsertCodePair(pair);
             var response = new ResponseDTO(http.StatusOK, false, "", "");
@@ -57,7 +60,7 @@ module.exports = {
 
                 }
                 else {
-                    
+
                     callback(null, html);
                 }
             });

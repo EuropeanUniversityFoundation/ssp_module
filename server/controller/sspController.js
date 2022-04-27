@@ -28,8 +28,10 @@ module.exports = function (app) {
 
     // Create code to send registration link to email
     app.post("/ssp/register", RequestVerification.verifyAuthentication, function (req, res) {
-        console.log(req.body.email);
-        SSPService.generateProviderCodeForRegistrationLink(req.body.email, function (resp) {
+        console.log(req.body.provider_email);
+        console.log(req.body.requester_email);
+
+        SSPService.generateProviderCodeForRegistrationLink(req.body, function (resp) {
             if (resp.statusCode == http.StatusOK) {
                 SSPService.sendRegistrationEmail(resp.data, () => {
                     res.send(resp.toJSON())

@@ -1,9 +1,10 @@
 
 module.exports = class SSPRegistrationCodeDTO {
 
-    constructor(code, email) {
+    constructor(code, provider_email, requester_email) {
         this._code = code
-        this._email = email
+        this._provider_email = provider_email;
+        this._requester_email = requester_email;
 
         var date = new Date();
         date.setDate(date.getDate() + 7);
@@ -14,8 +15,12 @@ module.exports = class SSPRegistrationCodeDTO {
         return this._code
     }
 
-    get email() {
-        return this._email
+    get provider_email() {
+        return this._provider_email
+    }
+
+    get requester_email() {
+        return this._requester_email
     }
 
     get expDate(){
@@ -26,7 +31,8 @@ module.exports = class SSPRegistrationCodeDTO {
     toJSON() {
         return {
             _id: this._code,
-            email: this._email,
+            provider_email: this._provider_email,
+            requester_email: this._requester_email,
             expirationDate: this._expirationDate    
         }
     }
