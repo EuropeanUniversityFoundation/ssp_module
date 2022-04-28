@@ -159,8 +159,8 @@ module.exports = {
         var cert_pass = "";
 
         const { exec } = require('child_process');
-        console.log("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(" ", "-") + "' '" + cert_pass + "' 'XX' 'XX' 0 '" + newCode + "' '" + process.env.CAPASS + "'");
-        exec("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(" ", "-") + "' '" + cert_pass + "' 'XX' 'XX' 0 '" + newCode + "' '" + process.env.CAPASS + "'", (err, stdout, stderr) => {
+        console.log("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(/ /g, "-") + "' '" + cert_pass + "' '" + provider.country + "' '" + provider.city.replace(/ /g, "-") + "' 0 '" + newCode + "' '" + process.env.CAPASS + "'");
+        exec("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(/ /g, "-") + "' '" + cert_pass + "' '" + provider.country + "' '" + provider.city.replace(/ /g, "-") + "' 0 '" + newCode + "' '" + process.env.CAPASS + "'", (err, stdout, stderr) => {
 
             // the *entire* stdout and stderr (buffered)
             console.log(`stdout: ${stdout}`);
