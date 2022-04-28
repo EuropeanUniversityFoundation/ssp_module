@@ -10,7 +10,7 @@ module.exports = function (app) {
 
     app.post("/ssp", RequestVerification.verifyAuthentication, function (req, res, _) {
 
-        SSPService.generateCertificate(body, function (code) {
+        SSPService.generateCertificate(req.body, function (code) {
 
             if (code.statusCode == http.StatusOK) {
                 SSPService.calculateCertHash(body.name, body.domain, code.devMessage, function (response) {
