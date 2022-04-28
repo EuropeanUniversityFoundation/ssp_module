@@ -33,7 +33,7 @@ const prefix = "rest"
 app.use('/' + prefix, router);
 
 
-require("./controller/sspController")(router, {});
+require("./controller/sspRegistrationController")(router, {});
 
 
 

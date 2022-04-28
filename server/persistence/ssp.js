@@ -18,6 +18,24 @@ module.exports = {
         });
     },
 
+    async UpdateSSP(domain, newVal, callback) {
+        MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
+            if (err) throw err;
+
+            var dbo = db.db(DatabaseVariables.DBNAME);
+
+            var query = { domain: domain };
+            var newvalues = { $set: newVal };
+
+            dbo.collection(DatabaseVariables.TABLE_SSP_PROVIDERS).updateOne(query, newvalues, function (err, res) {
+                if (err) throw err;
+                console.log("1 document update");
+                db.close();
+                return callback(res);
+            });
+        });
+    },
+
     async GetProvider(domain, callback) {
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;

@@ -1,4 +1,3 @@
-var postmark = require("postmark");
 var fs = require("fs");
 const nodemailer = require('nodemailer');
 const handlebars = require('handlebars');
@@ -14,6 +13,8 @@ const ProviderDTO = require("../dto/providerDTO")
 const ProviderDTOList = require("../dto/strucutreList")
 
 const URLConstants = require("../model/constants/urls")
+
+const Utils = require("../utils/utils")
 
 module.exports = {
 
@@ -45,65 +46,12 @@ module.exports = {
         }
     },
 
-    async sendRegistrationEmail(data, callback) {
-        var dec = JSON.parse(data)
-
-        var newCode = dec._id;
-        var email = dec.email;
-
-        var readHTMLFile = function (path, callback) {
-            console.log(path);
-            fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
-                if (err) {
-                    callback(err);
-                    throw err;
-
-                }
-                else {
-
-                    callback(null, html);
-                }
-            });
-        };
-
-        var transporter = nodemailer.createTransport({
-            host: 'mail.auth.gr',
-            port: 25,
-        });
-
-        readHTMLFile(__dirname + '/mailHTMLs/newRegistration.html', function (err, html) {
-            var template = handlebars.compile(html);
-            var replacements = {
-                newCode: newCode
-            };
-            var htmlToSend = template(replacements);
-
-            var mailOptions = {
-                from: "no-reply@auth.gr",
-                to: email,
-                subject: 'New Provider Registration',
-                html: htmlToSend
-            };
-
-            transporter.sendMail(mailOptions, function (error, info) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log('Email sent: ' + info.response);
-                }
-            });
-
-            return callback(true);
-        })
-
-
-    },
 
     async validateRegistration(newCode, callback) {
 
         try {
-            await SSPRegistrationCodePersistence.GetExpiration(newCode, function (doc) {
-                if (doc.length == 0) {
+            await SSPRegistrationCodePersistence.GetCodeAndEmails(newCode, function (doc) {
+                if (doc == null) {
                     return callback(new ResponseDTO(http.StatusNotFound, false, "Failed to Find an entry with that Code", "This page does not exist."));
                 }
 
@@ -128,7 +76,6 @@ module.exports = {
     },
 
     async deleteRegistrationCode(dto) {
-        console.log(dto);
         await SSPRegistrationCodePersistence.DeleteCode(dto);
     },
 
@@ -136,8 +83,7 @@ module.exports = {
 
         try {
             await SSPProviderPersistence.GetProvider(body.domain, async function (provider) {
-                console.log(provider);
-                if (provider != null) {
+                if (provider == null) {
                     console.log("Found Stored Provider", provider.name);
 
                     if (provider.domain === body.domain) {
@@ -150,7 +96,7 @@ module.exports = {
                     // Get Session from DB institutions_sessions
                     await SSPProviderPersistence.InsertSSP(body, async function (result) {
                         var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Provider was created");
-                        response.data = result.insertedId.toString();
+                        response.data = body;
                         return callback(response);
                     });
 
@@ -198,6 +144,48 @@ module.exports = {
 
 
     },
+
+    async generateCertificate(provider, callback) {
+
+        var newCode = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < 12; i++) {
+            newCode += characters.charAt(Math.floor(Math.random() *
+                charactersLength));
+        }
+
+        console.log(provider);
+        var cert_pass = "";
+
+        const { exec } = require('child_process');
+        console.log("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(" ", "-") + "' '" + cert_pass + "' 'XX' 'XX' 0 '" + newCode + "' '" + process.env.CAPASS + "'");
+        exec("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(" ", "-") + "' '" + cert_pass + "' 'XX' 'XX' 0 '" + newCode + "' '" + process.env.CAPASS + "'", (err, stdout, stderr) => {
+
+            // the *entire* stdout and stderr (buffered)
+            console.log(`stdout: ${stdout}`);
+            console.log(`stderr: ${stderr}`);
+
+            return callback(newCode);
+
+        });
+
+    },
+
+    async calculateCertHashAndUpdate(name, domain, newCode, callback) {
+
+        Utils.readFile(__dirname + '/certificates/' + name.replace(" ", "-") + '_' + newCode + '.crt', function (err, b64string) {
+            var remadePublicKey = b64string.substring(b64string.indexOf("\n") + 1)
+            var remadePublicKey2 = remadePublicKey.replace("-----END CERTIFICATE-----", "")
+
+            Utils.calculateHash(remadePublicKey2, async function (hash) {
+                await SSPProviderPersistence.UpdateSSP(domain, { hash: hash }, async function (result) {
+                    return callback(result);
+                });
+            })
+        });
+
+    }
 
 
 

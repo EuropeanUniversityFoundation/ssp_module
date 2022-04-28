@@ -19,7 +19,7 @@ module.exports = {
         });
     },
 
-    async GetExpiration(code, callback) {
+    async GetCodeAndEmails(code, callback) {
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;
 
