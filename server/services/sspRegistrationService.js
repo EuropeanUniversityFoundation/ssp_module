@@ -83,24 +83,24 @@ module.exports = {
 
         try {
             await SSPProviderPersistence.GetProvider(body.domain, async function (provider) {
-                if (provider != null) {
-                    console.log("Found Stored Provider", provider.name);
+                // if (provider != null) {
+                //     console.log("Found Stored Provider", provider.name);
 
-                    if (provider.domain === body.domain) {
-                        return callback(new ResponseDTO(http.StatusBadRequest, false, "Duplicate Name", "This Provider already exists."));
-                    }
-                } else {
+                //     if (provider.domain === body.domain) {
+                //         return callback(new ResponseDTO(http.StatusBadRequest, false, "Duplicate Name", "This Provider already exists."));
+                //     }
+                // } else {
 
-                    //  cert_pass = Cryptography.encrypt(cert_pass);
+                //  cert_pass = Cryptography.encrypt(cert_pass);
 
-                    // Get Session from DB institutions_sessions
-                    await SSPProviderPersistence.InsertSSP(body, async function (result) {
-                        var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Provider was created");
-                        response.data = body;
-                        return callback(response);
-                    });
+                // Get Session from DB institutions_sessions
+                await SSPProviderPersistence.InsertSSP(body, async function (result) {
+                    var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Provider was created");
+                    response.data = body;
+                    return callback(response);
+                });
 
-                }
+                // }
 
             });
 
