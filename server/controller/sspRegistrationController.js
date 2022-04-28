@@ -13,7 +13,7 @@ module.exports = function (app) {
         SSPService.generateCertificate(req.body, function (code) {
 
             if (code.statusCode == http.StatusOK) {
-                SSPService.calculateCertHash(body.name, body.domain, code.devMessage, function (response) {
+                SSPService.calculateCertHash(req.ody.name, body.domain, code.devMessage, function (response) {
 
                     SSPService.addProvider(req.body, function (addedProvider) {
 
