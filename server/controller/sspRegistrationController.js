@@ -13,8 +13,9 @@ module.exports = function (app) {
         SSPService.generateCertificate(req.body, function (code) {
 
             if (code.statusCode == http.StatusOK) {
-                SSPService.calculateCertHash(req.body.name, code.devMessage, function (response) {
+                SSPService.calculateCertHash(req.body.name, code.devMessage, function (hash) {
 
+                    req.body.hash = hash;
                     SSPService.addProvider(req.body, function (addedProvider) {
 
                         if (addedProvider.statusCode == http.StatusOK) {
@@ -24,7 +25,7 @@ module.exports = function (app) {
 
                                     EmailService.sendProviderCertificateEmail(code, addedProvider.data.email, () => {
                                         console.log(validCode.data);
-                                        EmailService.notifyRequesterEmail(code, validCode.data.requester_email, () => {
+                                        EmailService.notifyRequesterEmail(validCode.data.requester_email, code, () => {
 
                                             SSPService.deleteRegistrationCode({ _id: req.body.code });
                                             return res.json(addedProvider.toJSON());
