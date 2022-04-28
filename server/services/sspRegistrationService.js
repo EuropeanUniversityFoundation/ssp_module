@@ -180,6 +180,7 @@ module.exports = {
 
     async calculateCertHash(name, newCode, callback) {
 
+        console.log(__dirname + '/certificates/' + name.replace(" ", "-") + '_' + newCode + '.crt');
         Utils.readFile(__dirname + '/certificates/' + name.replace(" ", "-") + '_' + newCode + '.crt', function (err, b64string) {
             var remadePublicKey = b64string.substring(b64string.indexOf("\n") + 1)
             var remadePublicKey2 = remadePublicKey.replace("-----END CERTIFICATE-----", "")
