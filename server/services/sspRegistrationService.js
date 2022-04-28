@@ -83,7 +83,7 @@ module.exports = {
 
         try {
             await SSPProviderPersistence.GetProvider(body.domain, async function (provider) {
-                if (provider == null) {
+                if (provider != null) {
                     console.log("Found Stored Provider", provider.name);
 
                     if (provider.domain === body.domain) {
