@@ -24,7 +24,6 @@ module.exports = function (app) {
                                 if (validCode.statusCode == http.StatusOK) {
 
                                     EmailService.sendProviderCertificateEmail(code, addedProvider.data.email, () => {
-                                        console.log(validCode.data);
                                         EmailService.notifyRequesterEmail(validCode.data.requester_email, code, () => {
 
                                             SSPService.deleteRegistrationCode({ _id: req.body.code });

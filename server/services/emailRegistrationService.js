@@ -11,7 +11,7 @@ var transporter = nodemailer.createTransport({
 
 module.exports = {
 
-    async notifyRequesterEmail(email, name) {
+    async notifyRequesterEmail(email, name, callback) {
 
         Utils.readFile(__dirname + '/mailHTMLs/notifyRequester.html', function (err, html) {
             var template = handlebars.compile(html);
@@ -34,6 +34,8 @@ module.exports = {
                     console.log('Email sent: ' + info.response);
                 }
             });
+            
+            return callback(true);
 
         })
     },
