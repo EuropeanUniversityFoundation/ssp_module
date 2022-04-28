@@ -40,11 +40,8 @@ module.exports = {
 
     async sendRegistrationEmail(data, callback) {
 
-        var dec = JSON.parse(data)
-
-        var newCode = dec._id;
-        var email = dec.email;
-
+        var newCode = data._id;
+        var email = data.provider_email;
 
         Utils.readFile(__dirname + '/mailHTMLs/newRegistration.html', function (err, html) {
             var template = handlebars.compile(html);

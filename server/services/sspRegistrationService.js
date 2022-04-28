@@ -36,7 +36,7 @@ module.exports = {
 
             await SSPRegistrationCodePersistence.InsertCodePair(pair);
             var response = new ResponseDTO(http.StatusOK, false, "", "");
-            response.data = JSON.stringify(pair);
+            response.data = pair;
             return callback(response);
 
         } catch (err) {
