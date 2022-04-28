@@ -10,34 +10,41 @@ module.exports = function (app) {
 
     app.post("/ssp", RequestVerification.verifyAuthentication, function (req, res, _) {
 
-        SSPService.addProvider(req.body, function (addedProvider) {
+        SSPService.generateCertificate(body, function (code) {
 
-            if (addedProvider.statusCode == http.StatusOK) {
-                SSPService.validateRegistration(req.body.code, function (validCode) {
+            if (code.statusCode == http.StatusOK) {
+                SSPService.calculateCertHash(body.name, body.domain, code.devMessage, function (response) {
 
-                    if (validCode.statusCode == http.StatusOK) {
+                    SSPService.addProvider(req.body, function (addedProvider) {
 
-                        SSPService.deleteRegistrationCode({ _id: req.body.code })
+                        if (addedProvider.statusCode == http.StatusOK) {
+                            SSPService.validateRegistration(req.body.code, function (validCode) {
 
-                        SSPService.generateCertificate(addedProvider.data, function (code) {
+                                if (validCode.statusCode == http.StatusOK) {
 
-                            SSPService.calculateCertHashAndUpdate(addedProvider.data.name, addedProvider.data.domain, code, function (response) {
-                                if (response.matchedCount == 1) {
                                     EmailService.sendProviderCertificateEmail(code, addedProvider.data.email, () => {
-                                        console.log(validCode);
-                                        EmailService.notifyRequesterEmail(code, validCode.requester_email, () => {
+                                        EmailService.notifyRequesterEmail(code, validCode.data.requester_email, () => {
+
+                                            SSPService.deleteRegistrationCode({ _id: req.body.code });
                                             return res.json(addedProvider.toJSON());
+
                                         });
                                     });
+
+                                } else {
+                                    return res.json(validCode.toJSON());
                                 }
-                            })
-                        });
-                    } else {
-                        return res.json(validCode.toJSON());
-                    }
+
+                            });
+                        } else {
+                            return res.json(addedProvider.toJSON());
+                        }
+
+                    });
+
                 });
             } else {
-                return res.json(addedProvider.toJSON());
+                return res.json(code.toJSON());
             }
 
         });

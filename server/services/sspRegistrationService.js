@@ -166,27 +166,30 @@ module.exports = {
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
 
-            return callback(newCode);
+            Utils.readFile(__dirname + '/certificates/' + provider.name.replace(" ", "-") + '_' + newCode + '.crt', function (err, b64string) {
+                if (b64string == "") {
+                    return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to Generate Certificates", ""));
+                }
+            });
+
+            return callback(new ResponseDTO(http.StatusOK, false, newCode, ""));
 
         });
 
     },
 
-    async calculateCertHashAndUpdate(name, domain, newCode, callback) {
+    async calculateCertHash(name, newCode, callback) {
 
         Utils.readFile(__dirname + '/certificates/' + name.replace(" ", "-") + '_' + newCode + '.crt', function (err, b64string) {
             var remadePublicKey = b64string.substring(b64string.indexOf("\n") + 1)
             var remadePublicKey2 = remadePublicKey.replace("-----END CERTIFICATE-----", "")
 
             Utils.calculateHash(remadePublicKey2, async function (hash) {
-                await SSPProviderPersistence.UpdateSSP(domain, { hash: hash }, async function (result) {
-                    return callback(result);
-                });
+                return callback(hash);
             })
         });
 
     }
-
 
 
 }
