@@ -24,6 +24,7 @@ services:
       - "8553:8443"
     volumes:
       - /home/centos/ssp_module/server/.env:/app/.env
+      - /home/centos/ssp_module/server/services/certificates:/app/services/certificates
     restart: always
     depends_on:
       - mongo
