@@ -24,6 +24,7 @@ module.exports = function (app) {
                             SSPService.calculateCertHashAndUpdate(addedProvider.data.name, addedProvider.data.domain, code, function (response) {
                                 if (response.matchedCount == 1) {
                                     EmailService.sendProviderCertificateEmail(code, addedProvider.data.email, () => {
+                                        console.log(validCode);
                                         EmailService.notifyRequesterEmail(code, validCode.requester_email, () => {
                                             return res.json(addedProvider.toJSON());
                                         });
