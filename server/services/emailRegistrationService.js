@@ -34,7 +34,7 @@ module.exports = {
                     console.log('Email sent: ' + info.response);
                 }
             });
-            
+
             return callback(true);
 
         })
@@ -48,7 +48,8 @@ module.exports = {
         Utils.readFile(__dirname + '/mailHTMLs/newRegistration.html', function (err, html) {
             var template = handlebars.compile(html);
             var replacements = {
-                newCode: newCode
+                url: process.env.SSP_REGISTRATION_URL,
+                code: newCode
             };
             var htmlToSend = template(replacements);
 

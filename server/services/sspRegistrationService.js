@@ -47,18 +47,22 @@ module.exports = {
     },
 
 
-    async validateRegistration(newCode, callback) {
+    async validateRegistration(newCode, email, callback) {
 
         try {
             await SSPRegistrationCodePersistence.GetCodeAndEmails(newCode, function (doc) {
                 if (doc == null) {
-                    return callback(new ResponseDTO(http.StatusNotFound, false, "Failed to Find an entry with that Code", "This page does not exist."));
+                    return callback(new ResponseDTO(http.StatusNotFound, false, "Failed to Find an entry", "This page does not exist."));
                 }
 
                 // Check if code has expired
                 var diff = Math.abs(new Date().getDate() - doc.expirationDate);
                 if (diff <= 0) {
                     return callback(new ResponseDTO(http.StatusUnauthorized, false, "Expired Code", "This page is no longer available. Please register again."));
+                }
+
+                if (doc.provider_email == email && email != ""){
+                    return callback(new ResponseDTO(http.StatusNotFound, false, "Failed to Find an entry", "This page does not exist."));
                 }
 
                 var response = new ResponseDTO(http.StatusOK, false, "", "");

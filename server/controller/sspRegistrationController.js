@@ -76,7 +76,7 @@ module.exports = function (app) {
 
     // Validates if the Registration link is valid
     app.get("/ssp/register", RequestVerification.verifyAuthentication, function (req, res) {
-        SSPService.validateRegistration(req.query.code, function (resp) {
+        SSPService.validateRegistration(req.query.code, req.query.email, function (resp) {
             res.send(resp)
         });
     });
