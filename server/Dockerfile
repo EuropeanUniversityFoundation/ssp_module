@@ -16,8 +16,6 @@ RUN npm i
 COPY ./ ./
 
 
-EXPOSE 8443
-EXPOSE 8444
-EXPOSE 8445
+EXPOSE 8553
 
 CMD ["npm", "run", "start"]

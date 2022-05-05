@@ -20,8 +20,6 @@ services:
     container_name: sspmodule
     networks:
       - proxynet
-    ports:
-      - "8553:8443"
     volumes:
       - /home/centos/ssp_module/server/.env:/app/.env
       - /home/centos/ssp_module/server/services/certificates:/app/services/certificates
