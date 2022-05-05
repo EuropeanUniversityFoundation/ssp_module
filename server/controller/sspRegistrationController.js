@@ -19,7 +19,7 @@ module.exports = function (app) {
                     SSPService.addProvider(req.body, function (addedProvider) {
 
                         if (addedProvider.statusCode == http.StatusOK) {
-                            SSPService.validateRegistration(req.body.code, function (validCode) {
+                            SSPService.validateRegistration(req.body.code, req.body.email, function (validCode) {
 
                                 if (validCode.statusCode == http.StatusOK) {
 
