@@ -61,6 +61,7 @@ module.exports = {
                     return callback(new ResponseDTO(http.StatusUnauthorized, false, "Expired Code", "This page is no longer available. Please register again."));
                 }
 
+                console.log(doc.provider_email);
                 if (doc.provider_email == email && email != ""){
                     return callback(new ResponseDTO(http.StatusNotFound, false, "Failed to Find an entry", "This page does not exist."));
                 }
