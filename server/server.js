@@ -28,7 +28,7 @@ app.listen(port);
 // ROUTES
 const router = express.Router()
 
-const prefix = "rest"
+const prefix = "sspBackend"
 
 app.use('/' + prefix, router);
 
