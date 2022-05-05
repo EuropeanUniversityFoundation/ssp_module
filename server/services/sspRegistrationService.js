@@ -62,7 +62,8 @@ module.exports = {
                 }
 
                 console.log(doc.provider_email);
-                if (doc.provider_email == email && email != ""){
+                console.log(doc);
+                if (doc.provider_email != email || email == ""){
                     return callback(new ResponseDTO(http.StatusNotFound, false, "Failed to Find an entry", "This page does not exist."));
                 }
 
