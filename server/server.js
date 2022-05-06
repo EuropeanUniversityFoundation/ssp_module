@@ -34,6 +34,7 @@ app.use('/' + prefix, router);
 
 
 require("./controller/sspRegistrationController")(router, {});
+require("./controller/studentServiceController")(router, {});
 
 
 

@@ -1,7 +1,3 @@
-var fs = require("fs");
-const nodemailer = require('nodemailer');
-const handlebars = require('handlebars');
-
 const ResponseDTO = require("../dto/response")
 const SSPRegistrationCodeDTO = require("../dto/sspRegistrationCodeDTO")
 
@@ -9,7 +5,10 @@ const http = require("../model/constants/http")
 
 const SSPRegistrationCodePersistence = require("../persistence/sspRegistrationCodes")
 const SSPProviderPersistence = require("../persistence/ssp")
+const InstitutionsAndProvidersPersistence = require("../persistence/institutionsAndProviders")
+
 const ProviderDTO = require("../dto/providerDTO")
+const InstitutionsDTO = require("../dto/institutionsDTO")
 const ProviderDTOList = require("../dto/strucutreList")
 
 const URLConstants = require("../model/constants/urls")
@@ -63,7 +62,7 @@ module.exports = {
 
                 console.log(doc.provider_email);
                 console.log(doc);
-                if (doc.provider_email != email || email == ""){
+                if (doc.provider_email != email || email == "") {
                     return callback(new ResponseDTO(http.StatusNotFound, false, "Failed to Find an entry", "This page does not exist."));
                 }
 
@@ -89,24 +88,31 @@ module.exports = {
 
         try {
             await SSPProviderPersistence.GetProvider(body.domain, async function (provider) {
-                // if (provider != null) {
-                //     console.log("Found Stored Provider", provider.name);
+                if (provider != null) {
+                    console.log("Found Stored Provider", provider.name);
 
-                //     if (provider.domain === body.domain) {
-                //         return callback(new ResponseDTO(http.StatusBadRequest, false, "Duplicate Name", "This Provider already exists."));
-                //     }
-                // } else {
+                    if (provider.domain === body.domain) {
+                        return callback(new ResponseDTO(http.StatusBadRequest, false, "Duplicate Name", "This Provider already exists."));
+                    }
 
-                //  cert_pass = Cryptography.encrypt(cert_pass);
+                } else {
 
-                // Get Session from DB institutions_sessions
-                await SSPProviderPersistence.InsertSSP(body, async function (result) {
-                    var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Provider was created");
-                    response.data = body;
-                    return callback(response);
-                });
+                    //  cert_pass = Cryptography.encrypt(cert_pass);
 
-                // }
+                    // Get Session from DB institutions_sessions
+                    await SSPProviderPersistence.InsertSSP(body, async function () {
+
+                        var inst = new InstitutionsDTO(body.name, "provider");
+
+                        await InstitutionsAndProvidersPersistence.InsertInstitution(inst.toJSON(), async function () {
+                            var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Provider was created");
+                            response.data = body;
+                            return callback(response);
+                        })
+
+                    });
+
+                }
 
             });
 
