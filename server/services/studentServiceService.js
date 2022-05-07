@@ -94,6 +94,12 @@ module.exports = {
                         })
 
                     })
+                } else {
+                    var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Institution does not have services");
+                    var ssp_response = { ssp_response: [] }
+
+                    response.data = ssp_response;
+                    return callback(response);
                 }
             })
 
@@ -117,7 +123,7 @@ module.exports = {
     async addServiceType(type, callback) {
 
         try {
-            await ServiceTypePersistence.GetService({name: type}, async function (inst) {
+            await ServiceTypePersistence.GetService({ name: type }, async function (inst) {
 
                 console.log(inst);
                 if (inst != null) {
@@ -168,10 +174,10 @@ module.exports = {
         try {
             await ServiceTypePersistence.GetServices(async function (services) {
                 console.log(services);
-                
+
                 let listOfServices = [];
 
-                for (const service of services){
+                for (const service of services) {
                     console.log(service);
                     listOfServices.push(service.name)
                 }
