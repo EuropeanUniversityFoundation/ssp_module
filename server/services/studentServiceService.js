@@ -107,7 +107,7 @@ module.exports = {
     async addServiceType(type, callback) {
 
         try {
-            await ServiceTypePersistence.GetService(type, async function (inst) {
+            await ServiceTypePersistence.GetService({name: type}, async function (inst) {
 
                 console.log(inst);
                 if (inst != null) {
