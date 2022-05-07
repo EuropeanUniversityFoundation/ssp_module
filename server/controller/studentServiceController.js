@@ -23,7 +23,7 @@ module.exports = function (app) {
             StudentServiceService.getInstitution(result, function (institution) {
                 console.log(institution.data);
 
-                StudentServiceService.getServiceType(result.service.type[0], function (service) {
+                StudentServiceService.getServiceType({ name: result.service.type[0] }, function (service) {
                     console.log(service.data);
 
                     StudentServiceService.addService(institution.data._id, service.data._id, result.service.data, function (response) {
@@ -38,28 +38,12 @@ module.exports = function (app) {
 
     });
 
-    
-    app.post("/get", RequestVerification.verifyAuthentication, function (req, res, _) {
-        xml2js.parseString(req.body, (err, result) => {
-            if (err) {
-                throw err;
-            }
 
-            StudentServiceService.getInstitution(result, function (institution) {
-                console.log(institution.data);
+    app.get("/service", RequestVerification.verifyAuthentication, function (req, res, _) {
 
-                StudentServiceService.getServiceType(result.service.type[0], function (service) {
-                    console.log(service.data);
-
-                    StudentServiceService.addService(institution.data._id, service.data._id, result.service.data, function (response) {
-                        console.log(response.data);
-                        res.json(response.toJSON());
-
-                    })
-                })
-            })
-        });
-
+        StudentServiceService.getServicesOfInstitution(req.query.institution, "", function (resp) {
+            res.json(resp.toJSON());
+        })
 
     });
 

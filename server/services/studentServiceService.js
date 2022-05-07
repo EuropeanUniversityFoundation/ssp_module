@@ -13,7 +13,7 @@ module.exports = {
     async getInstitution(body, callback) {
 
         try {
-            await InstitutionsAndProvidersPersistence.GetInstitution(body.service.name[0], async function (inst) {
+            await InstitutionsAndProvidersPersistence.GetInstitution({ name: body.service.name[0] }, async function (inst) {
 
                 console.log(inst);
                 if (inst != null) {
@@ -59,6 +59,42 @@ module.exports = {
                 console.log(res);
                 response.data = res;
                 return callback(response);
+            })
+
+        } catch (err) {
+            console.log("Promise rejection error: " + err);
+            return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to insert Provider", "An error has occurred. Please login again."));
+
+        }
+    },
+
+    async getServicesOfInstitution(instName, serviceName, callback) {
+
+        try {
+            await InstitutionsAndProvidersPersistence.GetInstitution({ name: instName }, async function (inst) {
+
+                if (inst != null) {
+                    console.log("Found Stored Institution", inst._id);
+
+                    await InstitutionOwnServicePersistence.GetService(inst._id, serviceName, async function (res) {
+
+                        processServices(inst._id, serviceName, res, function (map) {
+                            var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
+
+                            var ssp_response = { ssp_response: [] }
+                            map.forEach((value, key) => {
+                                var elem = { provider: key, services: value }
+                                ssp_response.ssp_response.push(elem)
+                            })
+
+                            console.log(JSON.stringify(ssp_response));
+
+                            response.data = ssp_response;
+                            return callback(response);
+                        })
+
+                    })
+                }
             })
 
         } catch (err) {
@@ -117,6 +153,39 @@ module.exports = {
 
         }
 
-    }
+    },
 
+}
+
+async function processServices(instName, serviceName, services, callback) {
+    let map = new Map();
+
+    // array = Array.from(map, ([name, value]) => ({ name, value }));
+
+    for (const currentS of services) {
+        var fetched_service_name = "";
+        if (serviceName != "") {
+            fetched_service_name = serviceName;
+        } else {
+
+            await ServiceTypePersistence.GetServiceNoCallback({ _id: currentS.service_id })
+                .then(async (serviceN) => {
+                    fetched_service_name = serviceN.name;
+                    var service = {};
+                    service[fetched_service_name.toLowerCase()] = currentS.data;
+
+                    await InstitutionsAndProvidersPersistence.GetInstitutionNoCallback({ _id: currentS.provider_id })
+                        .then(async (provider) => {
+                            if (map.get(provider.name) == undefined) {
+                                map.set(provider.name, new Array())
+                            }
+                            var list = map.get(provider.name);
+                            list.push(service);
+                            console.log('adding to map');
+                            map.set(provider.name, list)
+                        })
+                })
+        }
+    }
+    return callback(map);
 }

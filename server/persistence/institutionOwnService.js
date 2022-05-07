@@ -23,10 +23,15 @@ module.exports = {
             if (err) throw err;
 
             var dbo = db.db(DatabaseVariables.DBNAME);
+            var query = {};
 
-            var query = { provider_id: provider_id, service_id: service_id }
+            if (service_id == "") {
+                query = { provider_id: provider_id }
+            } else {
+                query = { provider_id: provider_id, service_id: service_id }
+            }
 
-            dbo.collection(DatabaseVariables.TABLE_INSTITUTION_OWN_INFORMATION).findOne(query, function (err, res) {
+            dbo.collection(DatabaseVariables.TABLE_INSTITUTION_OWN_INFORMATION).find(query).toArray(function (err, res) {
                 if (err) throw err;
                 console.log("1 document fetched");
                 db.close();

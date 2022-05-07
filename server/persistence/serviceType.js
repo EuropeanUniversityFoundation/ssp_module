@@ -18,14 +18,13 @@ module.exports = {
         });
     },
 
-    async GetService(name, callback) {
+    async GetService(query, callback) {
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;
 
             var dbo = db.db(DatabaseVariables.DBNAME);
 
-            var query = { name: name }
-
+            console.log(query);
             dbo.collection(DatabaseVariables.TABLE_SERVICE_TYPE).findOne(query, function (err, res) {
                 if (err) throw err;
                 console.log("1 document fetched");
@@ -33,6 +32,26 @@ module.exports = {
                 return callback(res);
             });
         });
+    },
+
+    async GetServiceNoCallback(query) {
+
+        return new Promise(function(resolve, reject){
+            MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
+                if (err) throw err;
+    
+                var dbo = db.db(DatabaseVariables.DBNAME);
+    
+                console.log(query);
+                dbo.collection(DatabaseVariables.TABLE_SERVICE_TYPE).findOne(query, function (err, res) {
+                    if (err) throw err;
+                    console.log("1 document fetched");
+                    db.close();
+                    resolve(res);
+                });
+            });
+        })
+       
     },
 
 }
