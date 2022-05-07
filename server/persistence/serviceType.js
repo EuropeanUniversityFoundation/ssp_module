@@ -34,6 +34,22 @@ module.exports = {
         });
     },
 
+    async GetServices(callback) {
+        MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
+            if (err) throw err;
+
+            var dbo = db.db(DatabaseVariables.DBNAME);
+            
+            dbo.collection(DatabaseVariables.TABLE_SERVICE_TYPE).find({}).toArray(function (err, res) {
+                if (err) throw err;
+                console.log("1 document fetched");
+                db.close();
+                return callback(res);
+            });
+        });
+    },
+
+
     async GetServiceNoCallback(query) {
 
         return new Promise(function(resolve, reject){

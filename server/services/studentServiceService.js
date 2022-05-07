@@ -160,9 +160,41 @@ module.exports = {
         } catch (err) {
             console.log("Promise rejection error: " + err);
             return callback(new ResponseDTO(http.StatusInternalServerError, false, "Service does not exist", ""));
-
         }
+    },
 
+    async getServiceTypes(callback) {
+
+        try {
+            await ServiceTypePersistence.GetServices(async function (services) {
+                console.log(services);
+                
+                let listOfServices = [];
+
+                for (const service of services){
+                    console.log(service);
+                    listOfServices.push(service.name)
+                }
+
+                var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
+                response.data = listOfServices;
+                return callback(response);
+            });
+
+        } catch (err) {
+            console.log("Promise rejection error: " + err);
+            return callback(new ResponseDTO(http.StatusInternalServerError, false, "Service does not exist", ""));
+        }
+    },
+
+    async serviceDelete(id, callback) {
+        try {
+            await InstitutionOwnServicePersistence.DeleteService(id)
+        } catch (err) {
+            console.log("Promise rejection error: " + err);
+            return callback(new ResponseDTO(http.StatusInternalServerError, true, "Failed to Delete Service", "An error has occurred. Please try again or, if the problem persists, please contact the developers."));
+        }
+        return callback(new ResponseDTO(http.StatusOK, true, "", "Operation was successful"));
     },
 
 }

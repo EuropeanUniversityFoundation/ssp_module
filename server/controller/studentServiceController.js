@@ -62,4 +62,12 @@ module.exports = function (app) {
         })
 
     });
+
+    app.get("/serviceType", RequestVerification.verifyAuthentication, function (req, res, _) {
+
+        StudentServiceService.getServiceTypes(function (resp) {
+            res.json(resp.toJSON());
+        })
+
+    });
 }
