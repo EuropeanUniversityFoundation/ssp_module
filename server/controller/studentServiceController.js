@@ -47,6 +47,13 @@ module.exports = function (app) {
 
     });
 
+    app.delete("/service", RequestVerification.verifyAuthentication, function (req, res, _) {
+
+        StudentServiceService.serviceDelete(req.query.id, function (resp) {
+            res.json(resp.toJSON());
+        })
+
+    });
 
     app.post("/serviceType", RequestVerification.verifyAuthentication, function (req, res, _) {
 

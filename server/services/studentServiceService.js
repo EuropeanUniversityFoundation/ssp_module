@@ -78,7 +78,7 @@ module.exports = {
 
                     await InstitutionOwnServicePersistence.GetService(inst._id, serviceName, async function (res) {
 
-                        processServices(inst._id, serviceName, res, function (map) {
+                        processServices(serviceName, res, function (map) {
                             var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
 
                             var ssp_response = { ssp_response: [] }
@@ -102,6 +102,16 @@ module.exports = {
             return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to insert Provider", "An error has occurred. Please login again."));
 
         }
+    },
+
+    async serviceDelete(id, callback) {
+        try {
+            await InstitutionOwnServicePersistence.DeleteService(id)
+        } catch (err) {
+            console.log("Promise rejection error: " + err);
+            return callback(new ResponseDTO(http.StatusInternalServerError, true, "Failed to Delete Service", "An error has occurred. Please try again or, if the problem persists, please contact the developers."));
+        }
+        return callback(new ResponseDTO(http.StatusOK, true, "", "Operation was successful"));
     },
 
     async addServiceType(type, callback) {
@@ -157,7 +167,7 @@ module.exports = {
 
 }
 
-async function processServices(instName, serviceName, services, callback) {
+async function processServices(serviceName, services, callback) {
     let map = new Map();
 
     // array = Array.from(map, ([name, value]) => ({ name, value }));
@@ -172,6 +182,7 @@ async function processServices(instName, serviceName, services, callback) {
                 .then(async (serviceN) => {
                     fetched_service_name = serviceN.name;
                     var service = {};
+                    service["id"] = currentS._id;
                     service[fetched_service_name.toLowerCase()] = currentS.data;
 
                     await InstitutionsAndProvidersPersistence.GetInstitutionNoCallback({ _id: currentS.provider_id })
