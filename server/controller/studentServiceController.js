@@ -15,25 +15,21 @@ module.exports = function (app) {
     app.use(bodyParser.raw(options));
 
     app.post("/service", RequestVerification.verifyAuthentication, function (req, res, _) {
-        xml2js.parseString(req.body, (err, result) => {
-            if (err) {
-                throw err;
-            }
+        var result = req.body;
 
-            StudentServiceService.getInstitution(result, function (institution) {
-                console.log(institution.data);
+        StudentServiceService.getInstitution(result, function (institution) {
+            console.log(institution.data);
 
-                StudentServiceService.getServiceType({ name: result.service.type[0] }, function (service) {
-                    console.log(service.data);
+            StudentServiceService.getServiceType({ name: result.service.type[0] }, function (service) {
+                console.log(service.data);
 
-                    StudentServiceService.addService(institution.data._id, service.data._id, result.service.data, function (response) {
-                        console.log(response.data);
-                        res.json(response.toJSON());
+                StudentServiceService.addService(institution.data._id, service.data._id, result.service.data, function (response) {
+                    console.log(response.data);
+                    res.json(response.toJSON());
 
-                    })
                 })
             })
-        });
+        })
 
 
     });
