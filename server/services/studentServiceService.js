@@ -1,3 +1,5 @@
+var mongodb = require('mongodb');
+
 const ResponseDTO = require("../dto/response")
 const InstitutionsDTO = require("../dto/institutionsDTO")
 const InstitutionOwnService = require("../dto/institutionOwnService")
@@ -30,10 +32,24 @@ module.exports = {
                     var inst = new InstitutionsDTO(body.service.name[0], "institution");
 
                     await InstitutionsAndProvidersPersistence.InsertInstitution(inst.toJSON(), async function (res) {
-                        var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Provider was created");
-                        console.log(res);
-                        response.data = res;
-                        return callback(response);
+
+                        await InstitutionsAndProvidersPersistence.GetInstitution({ _id: mongodb.ObjectId(res.insertedId) }, async function (inst) {
+
+                            console.log(inst);
+
+                            if (inst != null) {
+                                console.log("Found Stored Institution", inst.name);
+
+                                var response = new ResponseDTO(http.StatusOK, true, "", "");
+                                response.data = inst;
+                                return callback(response);
+
+                            }else{
+                                var response = new ResponseDTO(http.StatusOK, true, "", "");
+                                response.data = inst;
+                                return callback(response);
+                            }
+                        });
                     })
 
 
