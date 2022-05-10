@@ -237,7 +237,8 @@ async function processServices(serviceName, services, callback) {
                     fetched_service_name = serviceN.name;
                     var service = {};
                     service["id"] = currentS._id;
-                    service[fetched_service_name.toLowerCase()] = currentS.data;
+                    service["type"] = fetched_service_name;
+                    service["data"] = currentS.data;
 
                     await InstitutionsAndProvidersPersistence.GetInstitutionNoCallback({ _id: currentS.provider_id })
                         .then(async (provider) => {
