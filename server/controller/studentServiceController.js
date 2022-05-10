@@ -25,9 +25,12 @@ module.exports = function (app) {
                 console.log(service.data);
 
                 StudentServiceService.addService(institution.data._id, service.data._id, result.data, function (response) {
-                    console.log(response.data);
-                    res.json(response.toJSON());
 
+                    StudentServiceService.getServicesOfInstitution(institution.data.name, "", function (resp) {
+                        response.data = resp.data;
+                        res.json(response.toJSON());
+                    })
+     
                 })
             })
         })
