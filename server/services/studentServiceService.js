@@ -15,7 +15,7 @@ module.exports = {
     async getInstitution(body, callback) {
 
         try {
-            await InstitutionsAndProvidersPersistence.GetInstitution({ name: body.service.name[0] }, async function (inst) {
+            await InstitutionsAndProvidersPersistence.GetInstitution({ name: body.service.name }, async function (inst) {
 
                 console.log(inst);
                 if (inst != null) {
@@ -29,7 +29,7 @@ module.exports = {
 
                     //  cert_pass = Cryptography.encrypt(cert_pass);
 
-                    var inst = new InstitutionsDTO(body.service.name[0], "institution");
+                    var inst = new InstitutionsDTO(body.service.name, "institution");
 
                     await InstitutionsAndProvidersPersistence.InsertInstitution(inst.toJSON(), async function (res) {
 

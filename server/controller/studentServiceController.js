@@ -21,7 +21,7 @@ module.exports = function (app) {
         StudentServiceService.getInstitution(result, function (institution) {
             console.log(institution.data);
 
-            StudentServiceService.getServiceType({ name: result.service.type[0] }, function (service) {
+            StudentServiceService.getServiceType({ name: result.service.type }, function (service) {
                 console.log(service.data);
 
                 StudentServiceService.addService(institution.data._id, service.data._id, result.service.data, function (response) {
