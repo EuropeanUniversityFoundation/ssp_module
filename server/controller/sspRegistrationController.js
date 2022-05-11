@@ -18,6 +18,7 @@ module.exports = function (app) {
                     req.body.hash = hash;
                     SSPService.addProvider(req.body, function (addedProvider) {
 
+                        console.log(addedProvider);
                         if (addedProvider.statusCode == http.StatusOK) {
                             SSPService.validateRegistration(req.body.code, req.body.email, function (validCode) {
 
