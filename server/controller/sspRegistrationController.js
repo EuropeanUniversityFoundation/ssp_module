@@ -23,6 +23,7 @@ module.exports = function (app) {
 
                                 if (validCode.statusCode == http.StatusOK) {
 
+                                    console.log(code);
                                     EmailService.sendProviderCertificateEmail(code.devMessage, addedProvider.data.email, () => {
                                         EmailService.notifyRequesterEmail(validCode.data.requester_email, req.body.name, () => {
 
