@@ -49,7 +49,7 @@ module.exports = {
             var template = handlebars.compile(html);
             var replacements = {
                 url: process.env.SSP_REGISTRATION_URL,
-                code: newCode
+                newCode: newCode
             };
             var htmlToSend = template(replacements);
 
