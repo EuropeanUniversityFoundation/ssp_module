@@ -24,14 +24,26 @@ module.exports = function (app) {
             StudentServiceService.getServiceType({ name: result.type }, function (service) {
                 console.log(service.data);
 
-                StudentServiceService.addService(institution.data._id, service.data._id, result.data, function (response) {
+                if (result.data == undefined) {
+                    StudentServiceService.addExternalService(institution.data._id, service.data._id, result.ssp, result.data_id, function (response) {
 
-                    StudentServiceService.getServicesOfInstitution(institution.data.name, "", function (resp) {
-                        response.data = resp.data;
-                        res.json(response.toJSON());
+                        StudentServiceService.getServicesOfInstitution(institution.data.name, "", function (resp) {
+                            response.data = resp.data;
+                            res.json(response.toJSON());
+                        })
+
                     })
-     
-                })
+                } else {
+                    StudentServiceService.addService(institution.data._id, service.data._id, result.data, function (response) {
+
+                        StudentServiceService.getServicesOfInstitution(institution.data.name, "", function (resp) {
+                            response.data = resp.data;
+                            res.json(response.toJSON());
+                        })
+
+                    })
+                }
+
             })
         })
 
@@ -41,7 +53,7 @@ module.exports = function (app) {
 
     app.get("/service", RequestVerification.verifyAuthentication, function (req, res, _) {
 
-        StudentServiceService.getServicesOfInstitution(req.query.institution, "", function (resp) {
+        StudentServiceService.getServicesOfInstitution(req.query.institution, req.query.service, function (resp) {
             res.json(resp.toJSON());
         })
 
@@ -50,6 +62,11 @@ module.exports = function (app) {
     app.delete("/service", RequestVerification.verifyAuthentication, function (req, res, _) {
 
         StudentServiceService.serviceDelete(req.query.id, function (resp) {
+            StudentServiceService.getServicesOfInstitution(institution.data.name, "", function (resp) {
+                response.data = resp.data;
+                res.json(response.toJSON());
+            })
+
             res.json(resp.toJSON());
         })
 

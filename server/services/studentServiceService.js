@@ -44,7 +44,7 @@ module.exports = {
                                 response.data = inst;
                                 return callback(response);
 
-                            }else{
+                            } else {
                                 var response = new ResponseDTO(http.StatusOK, true, "", "");
                                 response.data = inst;
                                 return callback(response);
@@ -84,6 +84,32 @@ module.exports = {
         }
     },
 
+    async addExternalService(provid, servid, ssp, dataId, callback) {
+
+        try {
+
+            await InstitutionsAndProvidersPersistence.GetInstitution({ name: ssp }, async function (inst) {
+
+                var service = new InstitutionOwnService(provid, servid, "");
+                service.ssp = inst._id;
+                service.ssp_data_id = dataId,
+
+                    await InstitutionOwnServicePersistence.InsertService(service.toJSONSSP(), async function (res) {
+                        var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was created");
+                        console.log(res);
+                        response.data = res;
+                        return callback(response);
+                    })
+
+            })
+
+        } catch (err) {
+            console.log("Promise rejection error: " + err);
+            return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to insert Provider", "An error has occurred. Please login again."));
+
+        }
+    },
+
     async getServicesOfInstitution(instName, serviceName, callback) {
 
         try {
@@ -92,24 +118,60 @@ module.exports = {
                 if (inst != null) {
                     console.log("Found Stored Institution", inst._id);
 
-                    await InstitutionOwnServicePersistence.GetService(inst._id, serviceName, async function (res) {
+                    var serv_id = "";
 
-                        processServices(serviceName, res, function (map) {
-                            var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
+                    console.log(serviceName);
+                    if (serviceName != "" && serviceName != undefined) {
+                        console.log('FETCH');
+                        await ServiceTypePersistence.GetService({ name: serviceName }, async service => {
+                            serv_id = service._id
+                            await InstitutionOwnServicePersistence.GetService(inst._id, serv_id, async function (res) {
 
-                            var ssp_response = { ssp_response: [] }
-                            map.forEach((value, key) => {
-                                var elem = { provider: key, services: value }
-                                ssp_response.ssp_response.push(elem)
+                                if (serviceName == undefined) {
+                                    serviceName = "";
+                                }
+                                processServices(serviceName, res, function (map) {
+                                    var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
+
+                                    var ssp_response = { ssp_response: [] }
+                                    map.forEach((value, key) => {
+                                        var elem = { provider: key, services: value }
+                                        ssp_response.ssp_response.push(elem)
+                                    })
+
+                                    console.log(JSON.stringify(ssp_response));
+
+                                    response.data = ssp_response;
+                                    return callback(response);
+                                })
+
+                            })
+                        });
+                    } else {
+                        await InstitutionOwnServicePersistence.GetService(inst._id, serv_id, async function (res) {
+
+                            if (serviceName == undefined) {
+                                serviceName = "";
+                            }
+                            processServices(serviceName, res, function (map) {
+                                var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
+
+                                var ssp_response = { ssp_response: [] }
+                                map.forEach((value, key) => {
+                                    var elem = { provider: key, services: value }
+                                    ssp_response.ssp_response.push(elem)
+                                })
+
+                                console.log(JSON.stringify(ssp_response));
+
+                                response.data = ssp_response;
+                                return callback(response);
                             })
 
-                            console.log(JSON.stringify(ssp_response));
-
-                            response.data = ssp_response;
-                            return callback(response);
                         })
+                    }
 
-                    })
+
                 } else {
                     var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Institution does not have services");
                     var ssp_response = { ssp_response: [] }
@@ -221,6 +283,7 @@ module.exports = {
 
 }
 
+
 async function processServices(serviceName, services, callback) {
     let map = new Map();
 
@@ -230,27 +293,92 @@ async function processServices(serviceName, services, callback) {
         var fetched_service_name = "";
         if (serviceName != "") {
             fetched_service_name = serviceName;
+            var service = {};
+
+            if (currentS.ssp != undefined & currentS.ssp != "") {
+                var ssp = currentS.ssp;
+
+                console.log(ssp);
+                await InstitutionsAndProvidersPersistence.GetInstitutionNoCallback({ _id: ssp })
+                    .then(async (provider) => {
+                        console.log('p1');
+                        console.log(currentS);
+                        await InstitutionOwnServicePersistence.GetServiceOfSSP(currentS.data_id)
+                            .then(async (res) => {
+                                service["id"] = currentS.data_id;
+                                service["type"] = fetched_service_name;
+                                service["data"] = res[0].data;
+                                if (map.get(provider.name) == undefined) {
+                                    map.set(provider.name, new Array())
+                                }
+                                var list = map.get(provider.name);
+                                list.push(service);
+                                console.log('adding to map');
+                                map.set(provider.name, list)
+                            })
+                    })
+            } else {
+                service["id"] = currentS._id;
+                service["type"] = fetched_service_name;
+                service["data"] = currentS.data;
+                await InstitutionsAndProvidersPersistence.GetInstitutionNoCallback({ _id: currentS.provider_id })
+                    .then(async (provider) => {
+                        if (map.get(provider.name) == undefined) {
+                            map.set(provider.name, new Array())
+                        }
+                        var list = map.get(provider.name);
+                        list.push(service);
+                        console.log('adding to map');
+                        map.set(provider.name, list)
+                    })
+            }
+
         } else {
 
             await ServiceTypePersistence.GetServiceNoCallback({ _id: currentS.service_id })
                 .then(async (serviceN) => {
                     fetched_service_name = serviceN.name;
                     var service = {};
-                    service["id"] = currentS._id;
-                    service["type"] = fetched_service_name;
-                    service["data"] = currentS.data;
+                    if (currentS.ssp != undefined & currentS.ssp != "") {
+                        var ssp = currentS.ssp;
 
-                    await InstitutionsAndProvidersPersistence.GetInstitutionNoCallback({ _id: currentS.provider_id })
-                        .then(async (provider) => {
-                            if (map.get(provider.name) == undefined) {
-                                map.set(provider.name, new Array())
-                            }
-                            var list = map.get(provider.name);
-                            list.push(service);
-                            console.log('adding to map');
-                            map.set(provider.name, list)
-                        })
+                        console.log(ssp);
+                        await InstitutionsAndProvidersPersistence.GetInstitutionNoCallback({ _id: ssp })
+                            .then(async (provider) => {
+                                console.log('p1');
+                                console.log(currentS);
+                                await InstitutionOwnServicePersistence.GetServiceOfSSP(currentS.data_id)
+                                    .then(async (res) => {
+                                        service["id"] = currentS.data_id;
+                                        service["type"] = fetched_service_name;
+                                        service["data"] = res[0].data;
+                                        if (map.get(provider.name) == undefined) {
+                                            map.set(provider.name, new Array())
+                                        }
+                                        var list = map.get(provider.name);
+                                        list.push(service);
+                                        console.log('adding to map');
+                                        map.set(provider.name, list)
+                                    })
+                            })
+                    } else {
+                        service["id"] = currentS._id;
+                        service["type"] = fetched_service_name;
+                        service["data"] = currentS.data;
+
+                        await InstitutionsAndProvidersPersistence.GetInstitutionNoCallback({ _id: currentS.provider_id })
+                            .then(async (provider) => {
+                                if (map.get(provider.name) == undefined) {
+                                    map.set(provider.name, new Array())
+                                }
+                                var list = map.get(provider.name);
+                                list.push(service);
+                                console.log('adding to map');
+                                map.set(provider.name, list)
+                            })
+                    }
                 })
+
         }
     }
     return callback(map);

@@ -8,6 +8,7 @@ module.exports = {
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;
 
+            console.log(data);
             var dbo = db.db(DatabaseVariables.DBNAME);
 
             dbo.collection(DatabaseVariables.TABLE_INSTITUTION_OWN_INFORMATION).insertOne(data, function (err, res) {
@@ -32,11 +33,30 @@ module.exports = {
                 query = { provider_id: provider_id, service_id: service_id }
             }
 
+
             dbo.collection(DatabaseVariables.TABLE_INSTITUTION_OWN_INFORMATION).find(query).toArray(function (err, res) {
                 if (err) throw err;
                 console.log("1 document fetched");
                 db.close();
                 return callback(res);
+            });
+        });
+    },
+
+    async GetServiceOfSSP(service_id) {
+        return new Promise(function (resolve, reject) {
+            MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
+                if (err) throw err;
+
+                var dbo = db.db(DatabaseVariables.DBNAME);
+                var query = { _id: service_id };
+
+                dbo.collection(DatabaseVariables.TABLE_INSTITUTION_OWN_INFORMATION).find(query).toArray(function (err, res) {
+                    if (err) throw err;
+                    console.log("1 document fetched");
+                    db.close();
+                    return resolve(res);
+                });
             });
         });
     },

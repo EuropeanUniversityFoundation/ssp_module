@@ -1,3 +1,4 @@
+var ObjectId = require("mongodb").ObjectId
 module.exports = class InstitutionOwnService {
 
     constructor(prov_id, serv_id, data) {
@@ -18,6 +19,22 @@ module.exports = class InstitutionOwnService {
         return this._data;
     }
 
+    get ssp() {
+        return this._ssp;
+    }
+
+    set ssp(ssp){
+        this._ssp = ssp;
+    }
+
+    set ssp_data_id(id){
+        this._ssp_data_id = id;
+    }
+
+    get ssp_data_id(){
+        return this._ssp_data_id;
+    }
+
     toJSON() {
         return {
             provider_id: this.provider_id,
@@ -26,5 +43,13 @@ module.exports = class InstitutionOwnService {
         }
     }
 
+    toJSONSSP() {
+        return {
+            provider_id: this.provider_id,
+            service_id: this.service_id,
+            ssp: this.ssp,
+            data_id: new ObjectId(this.ssp_data_id)
+        }
+    }
 }
 
