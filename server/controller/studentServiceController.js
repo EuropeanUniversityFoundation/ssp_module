@@ -72,6 +72,15 @@ module.exports = function (app) {
 
     });
 
+    app.patch("/service", RequestVerification.verifyAuthentication, function (req, res, _) {
+
+        StudentServiceService.updatePermissions(req.body, function (resp) {
+            res.json(resp.toJSON());
+        })
+
+    });
+
+
     app.post("/serviceType", RequestVerification.verifyAuthentication, function (req, res, _) {
 
         StudentServiceService.addServiceType(req.body.name, function (resp) {
