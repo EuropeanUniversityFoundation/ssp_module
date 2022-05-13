@@ -34,7 +34,7 @@ module.exports = {
             const pair = new SSPRegistrationCodeDTO(newCode, provider_email, requester_email).toJSON();
 
             await SSPRegistrationCodePersistence.InsertCodePair(pair);
-            var response = new ResponseDTO(http.StatusOK, false, "", "");
+            var response = new ResponseDTO(http.StatusOK, false, "Managed to insert code and email pair", "Email successfully sent");
             response.data = pair;
             return callback(response);
 
@@ -66,7 +66,7 @@ module.exports = {
                     return callback(new ResponseDTO(http.StatusNotFound, false, "Failed to Find an entry", "This page does not exist."));
                 }
 
-                var response = new ResponseDTO(http.StatusOK, false, "", "");
+                var response = new ResponseDTO(http.StatusOK, false, "Code-Email pair is valid", "Your credentials are valid.");
                 response.data = doc;
                 return callback(response);
 
@@ -143,7 +143,7 @@ module.exports = {
                     list.data = elem;
                 })
 
-                var response = new ResponseDTO(http.StatusOK, true, "", "");
+                var response = new ResponseDTO(http.StatusOK, true, "Successfully fetched list", "Successfully fetched provider list");
                 response.data = listOfProviders;
                 return callback(response);
 
