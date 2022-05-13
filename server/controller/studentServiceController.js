@@ -17,7 +17,7 @@ module.exports = function (app) {
     app.post("/service", RequestVerification.verifyAuthentication, function (req, res, _) {
         var result = req.body;
 
-        console.log(result);
+        console.log(JSON.stringify(result));
         StudentServiceService.getInstitution(result, function (institution) {
             console.log(institution.data);
 
