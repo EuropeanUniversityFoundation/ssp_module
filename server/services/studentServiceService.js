@@ -323,10 +323,11 @@ async function processServices(serviceName, services, callback) {
                         console.log(currentS);
                         await InstitutionOwnServicePersistence.GetServiceOfSSP(currentS.data_id)
                             .then(async (res) => {
-                                service["id"] = currentS.data_id;
+                                service["id"] = currentS._id;
                                 // service["permissions"] = res[0].permissions;
                                 service["type"] = fetched_service_name;
                                 service["data"] = res[0].data;
+                                service["data_id"] = currentS.data_id;
                                 if (map.get(provider.name) == undefined) {
                                     map.set(provider.name, new Array())
                                 }
@@ -369,10 +370,11 @@ async function processServices(serviceName, services, callback) {
                                 console.log(currentS);
                                 await InstitutionOwnServicePersistence.GetServiceOfSSP(currentS.data_id)
                                     .then(async (res) => {
-                                        service["id"] = currentS.data_id;
+                                        service["id"] = currentS._id;
                                         // service["permissions"] = res[0].permissions;
                                         service["type"] = fetched_service_name;
                                         service["data"] = res[0].data;
+                                        service["data_id"] = currentS.data_id;
                                         if (map.get(provider.name) == undefined) {
                                             map.set(provider.name, new Array())
                                         }
