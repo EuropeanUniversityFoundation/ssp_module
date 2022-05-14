@@ -62,10 +62,10 @@ module.exports = function (app) {
     app.delete("/service", RequestVerification.verifyAuthentication, function (req, res, _) {
 
         StudentServiceService.serviceDelete(req.query.id, function (resp) {
-            StudentServiceService.getServicesOfInstitution(institution.data.name, "", function (resp) {
-                response.data = resp.data;
-                res.json(response.toJSON());
-            })
+            // StudentServiceService.getServicesOfInstitution(institution.data.name, "", function (resp) {
+            //     response.data = resp.data;
+            //     res.json(response.toJSON());
+            // })
 
             res.json(resp.toJSON());
         })
