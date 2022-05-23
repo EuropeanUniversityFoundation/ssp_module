@@ -1,5 +1,8 @@
 var bodyParser = require('body-parser');
 const xml2js = require("xml2js")
+const path = require("path");
+const mime = require("mime");
+var fs = require("fs");
 
 const RequestVerification = require("../security/requestVerification")
 
@@ -95,5 +98,23 @@ module.exports = function (app) {
             res.json(resp.toJSON());
         })
 
+    });
+
+    // Validates if the Registration link is valid
+    app.get("/certificate", function (req, res) {
+        console.log('certificate');
+        StudentServiceService.downloadCertificate(req.query.fileID, req.query.format, function (resp) {
+            console.log('here');
+            var filename = path.basename(resp.fileNameToDownload);
+            var mimetype = mime.lookup(resp.fileToDownload);
+
+            res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+            res.setHeader('Content-type', mimetype);
+
+            var filestream = fs.createReadStream(resp.fileToDownload);
+            filestream.pipe(res);
+
+            // fs.unlinkSync(resp.fileToDownload);
+        });
     });
 }

@@ -1,3 +1,4 @@
+var fs = require("fs");
 var mongodb = require('mongodb');
 
 const ResponseDTO = require("../dto/response")
@@ -297,6 +298,39 @@ module.exports = {
             return callback(new ResponseDTO(http.StatusInternalServerError, true, "Failed to Delete Service", "An error has occurred. Please try again or, if the problem persists, please contact the developers."));
         }
         return callback(new ResponseDTO(http.StatusOK, true, "", "Operation was successful"));
+    },
+
+    async downloadCertificate(id, format, callback) {
+
+        var folder = "./services/certificates"
+        var fileNameToDownload = "";
+
+        fs.readdir(folder, (err, files) => {
+            files.forEach(file => {
+                var fileIDAndFormatA = file.split("_");
+                var fileIDAndFormat;
+
+                if (fileIDAndFormatA.length > 1) {
+                    fileIDAndFormat = fileIDAndFormatA[1]
+
+                    var ff = fileIDAndFormat.split(".");
+
+                    var fileID = ff[0];
+                    var fileFormat = ff[1];
+
+
+                    if (fileID === id && format === fileFormat) {
+                        fileToDownload = folder + "/" + file;
+                        fileNameToDownload = fileIDAndFormatA[0] + "." + format;
+                        console.log(fileNameToDownload);
+
+                        return callback({ fileToDownload: fileToDownload, fileNameToDownload: fileNameToDownload });
+                    }
+
+                }
+
+            });
+        });
     },
 
 }
