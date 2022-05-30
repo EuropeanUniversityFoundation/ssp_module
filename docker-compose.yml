@@ -32,7 +32,7 @@ services:
     image: mongo:latest
     container_name: mongo-db
     networks:
-      # - my-proxy-net
+      - my-proxy-net
       - graylog
   #DB in share for persistence
     volumes:
