@@ -30,6 +30,7 @@ services:
     # MongoDB: https://hub.docker.com/_/mongo/
   mongodb:
     image: mongo:latest
+    container_name: mongo-db
     networks:
       # - my-proxy-net
       - graylog
