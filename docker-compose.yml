@@ -25,7 +25,7 @@ services:
       - /home/centos/ssp_module/server/services/certificates:/app/services/certificates
     restart: always
     depends_on:
-      - mongo
+      - mongodb
 
   mongodb:
     image: mongo:latest
