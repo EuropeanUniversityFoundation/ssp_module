@@ -30,9 +30,8 @@ services:
     # MongoDB: https://hub.docker.com/_/mongo/
   mongodb:
     image: mongo:4.2
-    container_name: mongo-db
     networks:
-      - my-proxy-net
+      # - my-proxy-net
       - graylog
   #DB in share for persistence
     volumes:
