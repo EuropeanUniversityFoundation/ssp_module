@@ -27,17 +27,24 @@ services:
     depends_on:
       - mongo
 
-  mongo:
+  mongodb:
     image: mongo:latest
     container_name: mongo-db
     ports:
       - 27017:27017
     networks:
       - my-proxy-net
-
+      - graylog
+    volumes:
+      - ./mongo_data:/data/db
+volumes:
+  mongo_data:
+    driver: local
 networks:
   proxynet:
     name: custom_network
   my-proxy-net:
     external:
       name: custom_network
+  graylog:
+    driver: bridge
