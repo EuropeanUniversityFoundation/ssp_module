@@ -1,7 +1,7 @@
 
 
 module.exports = Object.freeze({
-    Hostname: "https://edssiregistrationportal.it.auth.gr/rest",
+    Hostname: "https://dashboard.sspmodule.it.auth.gr/rest",
     HeiInformationHostname: "hei.api.uni-foundation.eu",
     HeiInformationPath: "/institutions/"
 });
