@@ -358,7 +358,7 @@ async function processServices(serviceName, services, callback) {
                         await InstitutionOwnServicePersistence.GetServiceOfSSP(currentS.data_id)
                             .then(async (res) => {
                                 service["id"] = currentS._id;
-                                // service["permissions"] = res[0].permissions;
+                                service["permissions"] = res[0].permissions;
                                 service["type"] = fetched_service_name;
                                 service["data"] = res[0].data;
                                 service["data_id"] = currentS.data_id;
@@ -373,7 +373,7 @@ async function processServices(serviceName, services, callback) {
                     })
             } else {
                 service["id"] = currentS._id;
-                // service["permissions"] = currentS.permissions;
+                service["permissions"] = currentS.permissions;
                 service["type"] = fetched_service_name;
                 service["data"] = currentS.data;
                 await InstitutionsAndProvidersPersistence.GetInstitutionNoCallback({ _id: currentS.provider_id })
@@ -405,7 +405,7 @@ async function processServices(serviceName, services, callback) {
                                 await InstitutionOwnServicePersistence.GetServiceOfSSP(currentS.data_id)
                                     .then(async (res) => {
                                         service["id"] = currentS._id;
-                                        // service["permissions"] = res[0].permissions;
+                                        service["permissions"] = res[0].permissions;
                                         service["type"] = fetched_service_name;
                                         service["data"] = res[0].data;
                                         service["data_id"] = currentS.data_id;
@@ -420,7 +420,7 @@ async function processServices(serviceName, services, callback) {
                             })
                     } else {
                         service["id"] = currentS._id;
-                        // service["permissions"] = currentS.permissions;
+                        service["permissions"] = currentS.permissions;
                         service["type"] = fetched_service_name;
                         service["data"] = currentS.data;
 
