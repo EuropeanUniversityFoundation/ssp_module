@@ -27,14 +27,6 @@ services:
     depends_on:
       - mongo
 
-  mongo:
-    image: mongo:latest
-    container_name: mongo-db
-    ports:
-      - 27017:27017
-    networks:
-      - my-proxy-net
-
 networks:
   proxynet:
     name: custom_network
