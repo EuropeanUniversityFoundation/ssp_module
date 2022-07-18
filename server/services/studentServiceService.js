@@ -312,18 +312,10 @@ module.exports = {
                         console.log('here');
                         console.log(res);
 
-                        processServices("", res, function (map) {
+                        processArrayOfClientInstitutions(res, function (list) {
                             var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
 
-                            var ssp_response = { ssp_response: [] }
-                            map.forEach((value, key) => {
-                                var elem = { provider: key, services: value }
-                                ssp_response.ssp_response.push(elem)
-                            })
-
-                            console.log(JSON.stringify(ssp_response));
-
-                            response.data = ssp_response;
+                            response.data = list;
                             return callback(response);
                         })
 
@@ -331,9 +323,8 @@ module.exports = {
 
                 } else {
                     var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Institution does not have services");
-                    var ssp_response = { ssp_response: [] }
 
-                    response.data = ssp_response;
+                    response.data = [];
                     return callback(response);
                 }
             })
@@ -496,4 +487,36 @@ async function processServices(serviceName, services, callback) {
         }
     }
     return callback(map);
+}
+
+async function processArrayOfClientInstitutions(services, callback) {
+    let list = []
+
+    // array = Array.from(map, ([name, value]) => ({ name, value }));
+
+    for (const currentS of services) {
+        var fetched_service_name = "";
+
+        await ServiceTypePersistence.GetServiceNoCallback({ _id: currentS.service_id })
+            .then(async (serviceN) => {
+                fetched_service_name = serviceN.name;
+                var service = {};
+
+                await InstitutionsAndProvidersPersistence.GetInstitutionNoCallback({ _id: mongodb.ObjectId(currentS.provider_id) })
+                    .then(async (provider) => {
+                        console.log(currentS);
+                        await InstitutionOwnServicePersistence.GetServiceOfSSP(currentS.data_id)
+                            .then(async (res) => {
+                                service["service"] = fetched_service_name;
+                                service["name"] = res[0].data["service-name"]
+                                service["institution"] = provider.name;
+
+                                list.push(service);
+                            })
+                    })
+            })
+
+
+    }
+    return callback(list);
 }
