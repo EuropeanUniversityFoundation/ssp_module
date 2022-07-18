@@ -61,6 +61,22 @@ module.exports = {
         });
     },
 
+    async GetClientOfSSP(provider_id, callback) {
+        MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
+            if (err) throw err;
+
+            var dbo = db.db(DatabaseVariables.DBNAME);
+            var query = { ssp: new mongodb.ObjectId(provider_id) };
+
+            dbo.collection(DatabaseVariables.TABLE_INSTITUTION_OWN_INFORMATION).find(query).toArray(function (err, res) {
+                if (err) throw err;
+                console.log("1 document fetched");
+                db.close();
+                return callback(res);
+            });
+        });
+    },
+
     async DeleteService(id) {
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;

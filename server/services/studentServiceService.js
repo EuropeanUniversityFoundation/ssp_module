@@ -300,6 +300,59 @@ module.exports = {
         return callback(new ResponseDTO(http.StatusOK, true, "", "Operation was successful"));
     },
 
+    async getClients(provider, callback) {
+        try {
+            await InstitutionsAndProvidersPersistence.GetInstitution({ name: provider }, async function (inst) {
+
+                if (inst != null) {
+                    console.log("Found Stored Institution", inst._id);
+
+                    await InstitutionOwnServicePersistence.GetClientOfSSP(inst._id, async function (res) {
+
+                        processServices("", res, function (map) {
+                            var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
+
+                            var ssp_response = { ssp_response: [] }
+                            map.forEach((value, key) => {
+                                var elem = { provider: key, services: value }
+                                ssp_response.ssp_response.push(elem)
+                            })
+
+                            console.log(JSON.stringify(ssp_response));
+
+                            response.data = ssp_response;
+                            return callback(response);
+                        })
+
+                    })
+
+                } else {
+                    var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Institution does not have services");
+                    var ssp_response = { ssp_response: [] }
+
+                    response.data = ssp_response;
+                    return callback(response);
+                }
+            })
+
+        } catch (err) {
+            console.log("Promise rejection error: " + err);
+            return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to insert Provider", "An error has occurred. Please login again."));
+
+        }
+    },
+
+    async serviceDelete(id, callback) {
+        try {
+            await InstitutionOwnServicePersistence.DeleteService(id)
+        } catch (err) {
+            console.log("Promise rejection error: " + err);
+            return callback(new ResponseDTO(http.StatusInternalServerError, true, "Failed to Delete Service", "An error has occurred. Please try again or, if the problem persists, please contact the developers."));
+        }
+        return callback(new ResponseDTO(http.StatusOK, true, "", "Operation was successful"));
+    },
+
+
     async downloadCertificate(id, format, callback) {
 
         var folder = "./services/certificates"

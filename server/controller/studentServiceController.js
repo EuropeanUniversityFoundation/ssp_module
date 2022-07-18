@@ -100,6 +100,15 @@ module.exports = function (app) {
 
     });
 
+    app.get("/clients", RequestVerification.verifyAuthentication, function (req, res, _) {
+
+        StudentServiceService.getClients(req.query.provider, function (resp) {
+            res.json(resp.toJSON());
+        })
+
+    });
+
+
     // Validates if the Registration link is valid
     app.get("/certificate", function (req, res) {
         console.log('certificate');
