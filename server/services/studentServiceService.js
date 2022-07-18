@@ -309,6 +309,9 @@ module.exports = {
 
                     await InstitutionOwnServicePersistence.GetClientOfSSP(inst._id, async function (res) {
 
+                        console.log('here');
+                        console.log(res);
+
                         processServices("", res, function (map) {
                             var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
 
