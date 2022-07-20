@@ -17,5 +17,6 @@ COPY ./ ./
 
 
 EXPOSE 8553
+EXPOSE 8554
 
 CMD ["npm", "run", "start"]
