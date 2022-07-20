@@ -508,7 +508,10 @@ async function processArrayOfClientInstitutions(services, callback) {
                         await InstitutionOwnServicePersistence.GetServiceOfSSP(currentS.data_id)
                             .then(async (res) => {
                                 service["service"] = fetched_service_name;
-                                service["name"] = res[0].data["service-name"]
+                                if (res[0]) {
+                                    service["name"] = res[0].data["service-name"]
+                                }
+                                
                                 service["institution"] = provider.name;
 
                                 list.push(service);
