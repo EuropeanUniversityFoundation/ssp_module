@@ -23,9 +23,7 @@ sslvalidation.use(cors());
 sslvalidation.use(bodyParser.json());
 sslvalidation.use((bodyParser.urlencoded({ extended: true })));
 
-https.createServer({
-    cert: fs.readFileSync(path.join(__dirname, './services/certificates/sspfullchain.pem')),
-    key: fs.readFileSync(path.join(__dirname, './services/certificates/sspprivkey.pem')),
+http.createServer({
     ca: [fs.readFileSync(path.join(__dirname, './services/certificates/sspproviderca.crt'))],
     requestCert: true,
     rejectUnauthorized: true,
