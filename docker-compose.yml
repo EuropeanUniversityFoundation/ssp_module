@@ -24,6 +24,8 @@ services:
       - /home/centos/ssp_module/server/.env:/app/.env
       - /home/centos/ssp_module/server/services/certificates:/app/services/certificates
     restart: always
+    ports:
+      - "8554:8554"
     # depends_on:
     #   - mongo
 
