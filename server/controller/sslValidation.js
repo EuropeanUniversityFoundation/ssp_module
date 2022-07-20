@@ -2,7 +2,7 @@ const forge = require('node-forge')
 
 module.exports = function (app) {
 
-    app.get("/validate", function (req, res, _) {
+    app.post("/validate", function (req, res, _) {
 
         var prefix = '-----BEGIN CERTIFICATE-----\n';
         var postfix = '-----END CERTIFICATE-----';
