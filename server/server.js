@@ -16,8 +16,8 @@ const port = process.env.PORT || 8553;
 const sslPort = 8554;
 
 app.use(cors());
-sslvalidation.use(bodyParser.json());
-sslvalidation.use((bodyParser.urlencoded({ extended: true })));
+app.use(bodyParser.json());
+app.use((bodyParser.urlencoded({ extended: true })));
 
 sslvalidation.use(cors());
 sslvalidation.use(bodyParser.json());
