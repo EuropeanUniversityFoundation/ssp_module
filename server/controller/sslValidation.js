@@ -20,7 +20,8 @@ module.exports = function (app) {
 
         cookieString = cookieString.slice(0, -1)
 
-        console.log(cookieString);
+        console.log(cookieString)
+        res.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
         res.cookie('X-Cert-DN', cookieString, { encode: String });
         res.send()
     });
