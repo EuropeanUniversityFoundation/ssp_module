@@ -34,9 +34,6 @@ services:
     container_name: mongo-db
     networks:
       - my-proxy-net
-    volumes:
-      - /home/centos/ssp_module/mongod.conf:/etc/mongod.conf
-    entrypoint: ["mongod", "--auth", "--config", "/etc/mongod.conf"]
 
 
 networks:
