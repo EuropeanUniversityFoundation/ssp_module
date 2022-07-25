@@ -35,7 +35,17 @@ module.exports = {
 
     async GetService(query, callback) {
         console.log(DatabaseVariables.DBURL);
-
+        mongoose.Promise = global.Promise;
+        mongoose.connect(DatabaseVariables.DBURL, {
+            useNewUrlParser: true,
+            user: DatabaseVariables.DBUSER,
+            pass: DatabaseVariables.DBPASS
+        }).then(() => {
+            console.log('successfully connected to the database');
+        }).catch(err => {
+            console.log('error connecting to the database');
+            process.exit();
+        });
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;
 
