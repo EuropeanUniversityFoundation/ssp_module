@@ -37,7 +37,7 @@ services:
     networks:
       - my-proxy-net
     volumes:
-      - ./mongod.conf:/etc/mongod.conf
+      - /home/centos/ssp_module/mongod.conf:/etc/mongod.conf
     entrypoint: ["mongod", "--auth", "--config", "/etc/mongod.conf"]
 
 
