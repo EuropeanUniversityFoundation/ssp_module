@@ -32,8 +32,6 @@ services:
   mongo:
     image: mongo
     container_name: mongo-db
-    ports:
-      - 27117:27117
     networks:
       - my-proxy-net
     volumes:
