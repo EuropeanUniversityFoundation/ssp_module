@@ -21,6 +21,8 @@ module.exports = {
     },
 
     async GetService(query, callback) {
+        console.log(DatabaseVariables.DBURL);
+
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;
 

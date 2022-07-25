@@ -18,9 +18,6 @@ module.exports = {
         const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
         const creds = credentials.split(':');
 
-        console.log(creds);
-        console.log(process.env.SSP_USERNAME);
-
         if (creds[0] != process.env.SSP_USERNAME || creds[1] != process.env.SSP_PASS) {
             let resp = new ResponseDTO(http.StatusUnauthorized, false, "Invalid Authorization Header.", "");
             return res.json(resp.toJSON());
