@@ -29,13 +29,16 @@ services:
     # depends_on:
     #   - mongo
 
-  # mongo:
-  #   image: mongo:latest
-  #   container_name: mongo-db
-  #   ports:
-  #     - 27017:27017
-  #   networks:
-  #     - my-proxy-net
+  mongo:
+    image: mongo
+    container_name: mongo-db
+    ports:
+      - 27117:27117
+    networks:
+      - my-proxy-net
+    volumes:
+      - ./mongod.conf:/etc/mongod.conf
+    entrypoint: ["mongod", "--auth", "--config", "/etc/mongod.conf"]
 
 
 networks:
