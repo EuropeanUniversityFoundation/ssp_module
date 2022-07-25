@@ -3,7 +3,9 @@ var DatabaseVariables = require("../model/constants/database")
 
 module.exports = {
 
-    async InsertService(data, callback) {
+   async InsertService(data, callback) {
+    console.log(DatabaseVariables.DBURL);
+
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;
 
