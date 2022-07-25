@@ -44,7 +44,7 @@ module.exports = {
             console.log('successfully connected to the database');
         }).catch(err => {
             console.log('error connecting to the database');
-            process.exit();
+            console.log(err);
         });
         MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
             if (err) throw err;
