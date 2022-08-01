@@ -354,7 +354,7 @@ module.exports = {
 
         fs.readdir(folder, (err, files) => {
             files.forEach(file => {
-                var fileIDAndFormatA = file.split("_");
+                var fileIDAndFormatA = file.split("__");
                 var fileIDAndFormat;
 
                 if (fileIDAndFormatA.length > 1) {

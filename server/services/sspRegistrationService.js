@@ -171,14 +171,14 @@ module.exports = {
         var cert_pass = "";
 
         const { exec } = require('child_process');
-        console.log("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(/ /g, "-") + "' '" + process.env.PROVIDER_KEY_PASS + "' '" + provider.country + "' '" + provider.city.replace(/ /g, "-") + "' 0 '" + newCode + "' '" + process.env.CAPASS + "' '" + provider.email + "'");
-        exec("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(/ /g, "-") + "' '" + process.env.PROVIDER_KEY_PASS + "' '" + provider.country + "' '" + provider.city.replace(/ /g, "-") + "' 0 '" + newCode + "' '" + process.env.CAPASS + "' '" + provider.email + "'", (err, stdout, stderr) => {
+        console.log("cd services/certificates && sh ./generate_certificate.sh '" + provider.name+ "' '" + process.env.PROVIDER_KEY_PASS + "' '" + provider.country + "' '" + provider.city.replace(/ /g, "-") + "' 0 '" + newCode + "' '" + process.env.CAPASS + "' '" + provider.email + "'");
+        exec("cd services/certificates && sh ./generate_certificate.sh '" + provider.name + "' '" + process.env.PROVIDER_KEY_PASS + "' '" + provider.country + "' '" + provider.city.replace(/ /g, "-") + "' 0 '" + newCode + "' '" + process.env.CAPASS + "' '" + provider.email + "'", (err, stdout, stderr) => {
 
             // the *entire* stdout and stderr (buffered)
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
 
-            Utils.readFile(__dirname + '/certificates/' + provider.name.replace(/ /g, "-") + '_' + newCode + '.crt', function (err, b64string) {
+            Utils.readFile(__dirname + '/certificates/' + provider.name.replace(/ /g, "_") + '_' + newCode + '.crt', function (err, b64string) {
                 if (b64string == "") {
                     return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to Generate Certificates", ""));
                 }
