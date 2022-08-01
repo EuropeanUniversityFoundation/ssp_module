@@ -179,6 +179,8 @@ module.exports = {
             console.log(`stderr: ${stderr}`);
 
             Utils.readFile(__dirname + '/certificates/' + provider.name.replace(/ /g, "_") + '_' + newCode + '.crt', function (err, b64string) {
+                console.log('hereb64string');
+                console.log(b64string);
                 if (b64string == "") {
                     return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to Generate Certificates", ""));
                 }
