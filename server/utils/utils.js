@@ -3,6 +3,8 @@ const crypto = require("crypto")
 
 module.exports = {
     async readFile(path, callback) {
+        console.log('path');
+
         console.log(path);
         fs.readFile(path, { encoding: 'utf-8' }, function (err, f) {
             if (err) {
