@@ -171,8 +171,8 @@ module.exports = {
         var cert_pass = "";
 
         const { exec } = require('child_process');
-        console.log("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(/ /g, "-") + "' '" + process.env.PROVIDER_KEY_PASS + "' '" + provider.country + "' '" + provider.city.replace(/ /g, "-") + "' 0 '" + newCode + "' '" + process.env.CAPASS + "' '" + provider.name + "' '" + provider.email + "'");
-        exec("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(/ /g, "-") + "' '" + process.env.PROVIDER_KEY_PASS + "' '" + provider.country + "' '" + provider.city.replace(/ /g, "-") + "' 0 '" + newCode + "' '" + process.env.CAPASS + "' '" + provider.name + "' '" + provider.email + "'", (err, stdout, stderr) => {
+        console.log("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(/ /g, "-") + "' '" + process.env.PROVIDER_KEY_PASS + "' '" + provider.country + "' '" + provider.city.replace(/ /g, "-") + "' 0 '" + newCode + "' '" + process.env.CAPASS + "' '" + provider.email + "'");
+        exec("cd services/certificates && sh ./generate_certificate.sh '" + provider.name.replace(/ /g, "-") + "' '" + process.env.PROVIDER_KEY_PASS + "' '" + provider.country + "' '" + provider.city.replace(/ /g, "-") + "' 0 '" + newCode + "' '" + process.env.CAPASS + "' '" + provider.email + "'", (err, stdout, stderr) => {
 
             // the *entire* stdout and stderr (buffered)
             console.log(`stdout: ${stdout}`);
