@@ -12,6 +12,10 @@ module.exports = {
 
     async getServicesOfInstitutionIndex(instName, callback) {
 
+        if (typeof instName != 'string'){
+            return callback(new ResponseDTO(http.StatusBadRequest, false, "owner parameter invalid.", "owner parameter invalid."));
+        }
+
         console.log(instName);
         try {
             await InstitutionsAndProvidersPersistence.GetInstitution({ name: instName }, async function (inst) {
@@ -54,6 +58,9 @@ module.exports = {
 
     async getServicesOfInstitutionGet(instName, ids, callback) {
 
+        if (typeof instName != 'string'){
+            return callback(new ResponseDTO(http.StatusBadRequest, false, "owner parameter invalid.", "owner parameter invalid."));
+        }
         console.log(instName);
         try {
             await InstitutionsAndProvidersPersistence.GetInstitution({ name: instName }, async function (inst) {

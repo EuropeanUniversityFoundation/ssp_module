@@ -1,9 +1,7 @@
 var bodyParser = require('body-parser');
 
-
 const RequestVerification = require("../security/requestVerification")
 
-const StudentServiceService = require("../services/studentServiceService")
 const ApiService = require("../services/apiService")
 
 module.exports = function (app) {
@@ -25,7 +23,6 @@ module.exports = function (app) {
 
     app.get("/service/get", RequestVerification.verifyAuthentication, function (req, res, _) {
 
-        console.log(req.query.id);
         ApiService.getServicesOfInstitutionGet(req.query.owner, req.query.id, function (resp) {
             res.json(resp.toJSON());
         })
