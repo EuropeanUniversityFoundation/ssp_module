@@ -48,6 +48,7 @@ sslvalidation.use('/' + prefixsslvalidation, sslvalidationrouter);
 
 require("./controller/sspRegistrationController")(router, {});
 require("./controller/studentServiceController")(router, {});
+require("./controller/apiController")(router, {});
 require("./controller/sslValidation")(sslvalidationrouter, {});
 
 
