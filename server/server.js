@@ -2,12 +2,13 @@ const dotenv = require("dotenv")
 dotenv.config()
 
 const https = require('https');
-const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser'); // CSRF Cookie parsing
+const csrf = require('csurf')
 
 const app = express();
 const sslvalidation = express();
@@ -15,9 +16,21 @@ const sslvalidation = express();
 const port = process.env.PORT || 8553;
 const sslPort = 8554;
 
+var csrfProt = csrf({ cookie: true })
 app.use(cors());
+app.use(cookieParser())
 app.use(bodyParser.json());
 app.use((bodyParser.urlencoded({ extended: true })));
+
+
+// Middlewares
+app.use(csrfProt,function (req, res, next) {
+    var token = req.csrfToken();
+    console.log(token);
+    res.cookie('XSRF-TOKEN', token);
+    res.locals.csrfToken = token;
+    next();
+});
 
 sslvalidation.use(cors());
 sslvalidation.use(bodyParser.json());
