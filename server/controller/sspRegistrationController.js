@@ -8,6 +8,9 @@ const EmailService = require("../services/emailRegistrationService")
 module.exports = function (app) {
 
     app.get("/csrftoken", function (req, res, _) {
+        var token = req.csrfToken();
+        console.log(token);
+        res.locals.csrfToken = token;
         res.send({ csrfToken: req.csrfToken() })
     })
 

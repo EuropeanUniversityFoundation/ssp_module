@@ -25,10 +25,6 @@ app.use((bodyParser.urlencoded({ extended: true })));
 
 // Middlewares
 app.use(csrfProt,function (req, res, next) {
-    var token = req.csrfToken();
-    console.log(token);
-    res.cookie('XSRF-TOKEN', token);
-    res.locals.csrfToken = token;
     next();
 });
 
