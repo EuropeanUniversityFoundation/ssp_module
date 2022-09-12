@@ -66,4 +66,23 @@ module.exports = {
 
     },
 
+    async UpdateCountry(name, country, callback) {
+        MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
+            if (err) throw err;
+
+            var dbo = db.db(DatabaseVariables.DBNAME);
+            var query = { name: name };
+            var newvalues = { $set: { country: country } };
+
+            dbo.collection(DatabaseVariables.TABLE_INSTITUTION_OWN_INFORMATION).updateOne(query, newvalues, function (err, res) {
+                if (err) throw err;
+                console.log("1 document deleted");
+                db.close();
+                return callback(res);
+
+            });
+        });
+    },
+
+
 }

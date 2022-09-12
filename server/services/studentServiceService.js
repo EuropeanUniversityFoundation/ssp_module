@@ -22,15 +22,17 @@ module.exports = {
                 if (inst != null) {
                     console.log("Found Stored Institution", inst.name);
 
-                    var response = new ResponseDTO(http.StatusOK, true, "", "");
-                    response.data = inst;
-                    return callback(response);
+                    await InstitutionsAndProvidersPersistence.UpdateCountry(body.name, body.country, async function (res) {
+                        var response = new ResponseDTO(http.StatusOK, true, "", "");
+                        response.data = inst;
+                        return callback(response);
+                    })
 
                 } else {
 
                     //  cert_pass = Cryptography.encrypt(cert_pass);
 
-                    var inst = new InstitutionsDTO(body.name, "institution");
+                    var inst = new InstitutionsDTO(body.name, "institution", body.country);
 
                     await InstitutionsAndProvidersPersistence.InsertInstitution(inst.toJSON(), async function (res) {
 
@@ -111,23 +113,23 @@ module.exports = {
         }
     },
 
-    async updatePermissions(body, callback) {
+    // async updatePermissions(body, callback) {
 
-        try {
+    //     try {
 
-            await InstitutionOwnServicePersistence.UpdatePermissions(body.id, body.permissions, async function (res) {
-                var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was updated");
-                console.log(res);
-                response.data = res;
-                return callback(response);
-            })
+    //         await InstitutionOwnServicePersistence.UpdatePermissions(body.id, body.permissions, async function (res) {
+    //             var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was updated");
+    //             console.log(res);
+    //             response.data = res;
+    //             return callback(response);
+    //         })
 
-        } catch (err) {
-            console.log("Promise rejection error: " + err);
-            return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to insert Provider", "An error has occurred. Please login again."));
+    //     } catch (err) {
+    //         console.log("Promise rejection error: " + err);
+    //         return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to insert Provider", "An error has occurred. Please login again."));
 
-        }
-    },
+    //     }
+    // },
 
     async getServicesOfInstitution(instName, serviceName, callback) {
 
@@ -336,6 +338,39 @@ module.exports = {
         }
     },
 
+
+    async getCountries(callback) {
+        try {
+            await InstitutionsAndProvidersPersistence.GetInstitution({}, async function (insts) {
+
+                var countryList = []
+
+                if (insts != null) {
+                    insts.forEach((inst) => {
+                        if (!countryList.includes(inst.country)) {
+                            countryList.push(inst.country)
+                        }
+                    })
+
+                    var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Countries were fetched");
+                    response.data = countryList;
+                    return callback(response);
+
+                } else {
+                    var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "No Institutions were found");
+
+                    response.data = [];
+                    return callback(response);
+                }
+            })
+
+        } catch (err) {
+            console.log("Promise rejection error: " + err);
+            return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to insert Provider", "An error has occurred. Please login again."));
+
+        }
+    },
+
     async serviceDelete(id, callback) {
         try {
             await InstitutionOwnServicePersistence.DeleteService(id)
@@ -511,7 +546,7 @@ async function processArrayOfClientInstitutions(services, callback) {
                                 if (res[0]) {
                                     service["name"] = res[0].data["service-name"]
                                 }
-                                
+
                                 service["institution"] = provider.name;
 
                                 list.push(service);

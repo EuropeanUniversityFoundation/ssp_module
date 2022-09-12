@@ -75,13 +75,13 @@ module.exports = function (app) {
 
     });
 
-    app.patch("/service", RequestVerification.verifyAuthentication, function (req, res, _) {
+    // app.patch("/service", RequestVerification.verifyAuthentication, function (req, res, _) {
 
-        StudentServiceService.updatePermissions(req.body, function (resp) {
-            res.json(resp.toJSON());
-        })
+    //     StudentServiceService.updatePermissions(req.body, function (resp) {
+    //         res.json(resp.toJSON());
+    //     })
 
-    });
+    // });
 
 
     app.post("/serviceType", RequestVerification.verifyAuthentication, function (req, res, _) {
@@ -108,6 +108,13 @@ module.exports = function (app) {
 
     });
 
+    // Get Country List of institutions in Dashboard
+    app.get("/countries", RequestVerification.verifyAuthentication, function (req, res, _) {
+        StudentServiceService.getCountries(function (resp) {
+            res.json(resp.toJSON());
+        })
+
+    });
 
     // Validates if the Registration link is valid
     app.get("/certificate", function (req, res) {

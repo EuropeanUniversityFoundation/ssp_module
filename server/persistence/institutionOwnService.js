@@ -92,22 +92,22 @@ module.exports = {
         });
     },
 
-    async UpdatePermissions(id, permissions, callback) {
-        MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
-            if (err) throw err;
+    // async UpdatePermissions(id, permissions, callback) {
+    //     MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
+    //         if (err) throw err;
 
-            var dbo = db.db(DatabaseVariables.DBNAME);
-            var query = { _id: new mongodb.ObjectId(id) };
-            var newvalues = { $set: { permissions: permissions } };
+    //         var dbo = db.db(DatabaseVariables.DBNAME);
+    //         var query = { _id: new mongodb.ObjectId(id) };
+    //         var newvalues = { $set: { permissions: permissions } };
 
-            dbo.collection(DatabaseVariables.TABLE_INSTITUTION_OWN_INFORMATION).updateOne(query, newvalues, function (err, res) {
-                if (err) throw err;
-                console.log("1 document deleted");
-                db.close();
-                return callback(res);
+    //         dbo.collection(DatabaseVariables.TABLE_INSTITUTION_OWN_INFORMATION).updateOne(query, newvalues, function (err, res) {
+    //             if (err) throw err;
+    //             console.log("1 document deleted");
+    //             db.close();
+    //             return callback(res);
 
-            });
-        });
-    },
+    //         });
+    //     });
+    // },
 
 }
