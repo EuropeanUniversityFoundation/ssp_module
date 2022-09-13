@@ -284,19 +284,20 @@ module.exports = {
 
                             console.log('finalDataDEF');
                             console.log(finalData);
+
+                            if (finalData.length == institutionAndProviderList.length) {
+
+                                var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
+
+                                response.data = finalData;
+                                return callback(response);
+                            }
                         })
 
                     })
 
                 })
             })
-
-            console.log('finalData');
-            console.log(finalData);
-            var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
-
-            response.data = finalData;
-            return callback(response);
         })
 
     },
