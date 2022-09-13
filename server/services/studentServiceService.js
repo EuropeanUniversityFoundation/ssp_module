@@ -227,22 +227,22 @@ module.exports = {
             console.log(insts);
             insts.data.forEach((hei) => {
                 if (hei.city == city) {
-                    providerList.push({ name: hei.name, erasmus_code: hei.erasmus_code })
+                    institutionList.push({ name: hei.name, erasmus_code: hei.erasmus_code })
                 }
             })
 
-            console.log('providerList');
-            console.log(providerList);
+            console.log('institutionList');
+            console.log(institutionList);
         })
 
         let p2 = await SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
             console.log('insts Prov');
             console.log(insts);
             insts.forEach((prov) => {
-                institutionList.push({ name: prov.name, erasmus_code: prov.name })
+                providerList.push({ name: prov.name, erasmus_code: prov.name })
             })
-            console.log('list2');
-            console.log(institutionList);
+            console.log('providerList');
+            console.log(providerList);
         })
 
 
