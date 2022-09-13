@@ -224,8 +224,9 @@ module.exports = {
 
         let p1 = await this.getInstitutionsByCountry(country, function (insts) {
             console.log('insts');
-            console.log(insts.toJSON());
+            console.log(insts.toJSON().data);
             insts.toJSON().data.forEach((hei) => {
+                console.log(hei);
                 if (hei.city == city) {
                     institutionList.push({ name: hei.name, erasmus_code: hei.erasmus_code })
                 }
@@ -246,13 +247,17 @@ module.exports = {
         })
 
 
-        Promise.all([p1, p2]).then(() => {
+        await Promise.all([p1, p2]).then(() => {
             institutionAndProviderList = [...institutionList, ...providerList]
+            console.log('final list');
+            console.log(institutionAndProviderList);
             for (let i = 0; i < institutionAndProviderList.length; i++) {
                 this.getServicesOfInstitution(institutionAndProviderList[i], "", function (resp) {
                     finalData.push({ id: institutionAndProviderList[i].name, ssp_response: resp.data.ssp_response })
                 })
             }
+            console.log('finalData');
+            console.log(finalData);
         })
 
     },
