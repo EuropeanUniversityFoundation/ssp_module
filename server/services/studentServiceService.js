@@ -217,7 +217,12 @@ module.exports = {
         let finalData = []
         let institutionAndProviderList = []
 
+        console.log(country);
+        console.log(city);
+
         await this.getInstitutionsByCountry(country, function (insts) {
+            console.log('insts');
+            console.log(insts);
             insts.data.forEach((hei) => {
                 if (hei.city == city) {
                     institutionAndProviderList.push({ name: hei.name, erasmus_code: hei.erasmus_code })
