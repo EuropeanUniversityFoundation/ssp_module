@@ -56,9 +56,15 @@ module.exports = function (app) {
 
     app.get("/service", RequestVerification.verifyAuthentication, function (req, res, _) {
 
-        StudentServiceService.getServicesOfInstitution(req.query.institution, req.query.service, function (resp) {
-            res.json(resp.toJSON());
-        })
+        if (req.query.city) {
+            StudentServiceService.getServicesOfInstitutionByCity(req.query.city, function (resp) {
+                res.json(resp.toJSON());
+            })
+        } else {
+            StudentServiceService.getServicesOfInstitution(req.query.institution, req.query.service, function (resp) {
+                res.json(resp.toJSON());
+            })
+        }
 
     });
 
