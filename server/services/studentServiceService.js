@@ -213,46 +213,6 @@ module.exports = {
         }
     },
 
-    async getServicesOfInstitutionByCity(country, city, callback) {
-        let finalData = []
-
-        console.log(country);
-        console.log(city);
-
-        await getInstitutionProviderList(country, city, async function (institutionAndProviderList) {
-            for (let i = 0; i < institutionAndProviderList.length; i++) {
-
-                await InstitutionsAndProvidersPersistence.GetInstitution({ name: institutionAndProviderList[i] }, async function (inst) {
-
-                    console.log("Found Stored Institution", inst.name);
-
-                    await InstitutionOwnServicePersistence.GetService(inst._id, "", async function (res) {
-
-                        processServices("", res, function (map) {
-                            var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
-
-                            var ssp_response = { ssp_response: [] }
-                            map.forEach((value, key) => {
-                                var elem = { provider: key, services: value }
-                                ssp_response.ssp_response.push(elem)
-                            })
-
-                            console.log(JSON.stringify(ssp_response));
-
-                            response.data = ssp_response;
-                            finalData.push({ id: institutionAndProviderList[i].name, ssp_response: resp.data.ssp_response })
-                        })
-
-                    })
-
-                })
-            }
-            console.log('finalData');
-            console.log(finalData);
-        })
-
-    },
-
     async getInstitutionProviderList(country, city, callback) {
 
         let institutionList = []
@@ -289,6 +249,48 @@ module.exports = {
 
 
     },
+
+    async getServicesOfInstitutionByCity(country, city, callback) {
+        let finalData = []
+
+        console.log(country);
+        console.log(city);
+
+        await this.getInstitutionProviderList(country, city, async function (institutionAndProviderList) {
+            for (let i = 0; i < institutionAndProviderList.length; i++) {
+
+                await InstitutionsAndProvidersPersistence.GetInstitution({ name: institutionAndProviderList[i] }, async function (inst) {
+
+                    console.log("Found Stored Institution", inst.name);
+
+                    await InstitutionOwnServicePersistence.GetService(inst._id, "", async function (res) {
+
+                        processServices("", res, function (map) {
+                            var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
+
+                            var ssp_response = { ssp_response: [] }
+                            map.forEach((value, key) => {
+                                var elem = { provider: key, services: value }
+                                ssp_response.ssp_response.push(elem)
+                            })
+
+                            console.log(JSON.stringify(ssp_response));
+
+                            response.data = ssp_response;
+                            finalData.push({ id: institutionAndProviderList[i].name, ssp_response: resp.data.ssp_response })
+                        })
+
+                    })
+
+                })
+            }
+            console.log('finalData');
+            console.log(finalData);
+        })
+
+    },
+
+
 
     async serviceDelete(id, callback) {
         try {
