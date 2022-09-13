@@ -255,7 +255,7 @@ module.exports = {
         })
 
 
-        Promise.all([p1, p2]).then((values) => {
+        await Promise.all([p1, p2]).then((values) => {
             console.log('values');
             console.log(values);
             institutionAndProviderList = [...institutionList, ...providerList]
