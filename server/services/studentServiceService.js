@@ -11,11 +11,11 @@ const http = require("../model/constants/http")
 const InstitutionsAndProvidersPersistence = require("../persistence/institutionsAndProviders")
 const ServiceTypePersistence = require("../persistence/serviceType")
 const InstitutionOwnServicePersistence = require("../persistence/institutionOwnService")
+const SSPProviderPersistence = require("../persistence/ssp")
 
 const URLConstants = require("../model/constants/urls")
 
 const RequestFactory = require("../outrequest/requestFactory");
-const { count } = require("console");
 
 module.exports = {
 
@@ -213,49 +213,35 @@ module.exports = {
         }
     },
 
-    async getServicesOfInstitutionByCity(city, callback) {
+    async getServicesOfInstitutionByCity(country, city, callback) {
+        let finalData = []
+        let institutionAndProviderList = []
 
-        try {
-            await InstitutionsAndProvidersPersistence.GetInstitutionsFilter({ city: city }, async function (insts) {
-
-                insts.forEach(async (inst) => {
-
-                    if (inst != null) {
-                        console.log("Found Stored Institution", inst._id);
-
-                        await InstitutionOwnServicePersistence.GetService(inst._id, "", async function (res) {
-
-                            processServices("", res, function (map) {
-                                var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
-
-                                var ssp_response = { ssp_response: [] }
-                                map.forEach((value, key) => {
-                                    var elem = { provider: key, services: value }
-                                    ssp_response.ssp_response.push(elem)
-                                })
-
-                                console.log(JSON.stringify(ssp_response));
-
-                                response.data = ssp_response;
-                                return callback(response);
-                            })
-
-                        })
-
-                    } else {
-                        var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Institution does not have services");
-                        var ssp_response = { ssp_response: [] }
-
-                        response.data = ssp_response;
-                        return callback(response);
-                    }
-                })
+        await this.getInstitutionsByCountry(country, function (insts) {
+            insts.data.forEach((hei) => {
+                if (hei.city == city) {
+                    institutionAndProviderList.push({ name: hei.name, erasmus_code: hei.erasmus_code })
+                }
             })
-        } catch (err) {
-            console.log("Promise rejection error: " + err);
-            return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to insert Provider", "An error has occurred. Please login again."));
+        })
+        console.log('list1');
+        console.log(institutionAndProviderList);
 
+        await SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
+            insts.data.forEach((prov) => {
+                institutionAndProviderList.push({ name: prov.name, erasmus_code: prov.name })
+            })
+        })
+        
+        console.log('list2');
+        console.log(institutionAndProviderList);
+
+        for (let i = 0; i < institutionAndProviderList.length; i++) {
+            this.getServicesOfInstitution(institutionAndProviderList[i], "", function (resp) {
+                finalData.push({ id: institutionAndProviderList[i].name, ssp_response: resp.data.ssp_response })
+            })
         }
+
     },
 
 

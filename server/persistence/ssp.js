@@ -66,6 +66,21 @@ module.exports = {
                 return callback(res);
             });
         });
+    },
+
+    async GetProvidersFilter(query, callback) {
+        MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
+            if (err) throw err;
+
+            var dbo = db.db(DatabaseVariables.DBNAME);
+
+            dbo.collection(DatabaseVariables.TABLE_SSP_PROVIDERS).find(query).toArray(function (err, res) {
+                if (err) throw err;
+                console.log("1 document fetched");
+                db.close();
+                return callback(res);
+            });
+        });
     }
 
 
