@@ -1,5 +1,6 @@
 var fs = require("fs");
 var mongodb = require('mongodb');
+const xmlparser = require('xml2js');
 
 const ResponseDTO = require("../dto/response")
 const InstitutionsDTO = require("../dto/institutionsDTO")
@@ -10,6 +11,11 @@ const http = require("../model/constants/http")
 const InstitutionsAndProvidersPersistence = require("../persistence/institutionsAndProviders")
 const ServiceTypePersistence = require("../persistence/serviceType")
 const InstitutionOwnServicePersistence = require("../persistence/institutionOwnService")
+
+const URLConstants = require("../model/constants/urls")
+
+const RequestFactory = require("../outrequest/requestFactory");
+const { count } = require("console");
 
 module.exports = {
 
@@ -22,17 +28,15 @@ module.exports = {
                 if (inst != null) {
                     console.log("Found Stored Institution", inst.name);
 
-                    await InstitutionsAndProvidersPersistence.UpdateCountry(body.name, body.country, async function (res) {
-                        var response = new ResponseDTO(http.StatusOK, true, "", "");
-                        response.data = inst;
-                        return callback(response);
-                    })
+                    var response = new ResponseDTO(http.StatusOK, true, "", "");
+                    response.data = inst;
+                    return callback(response);
 
                 } else {
 
                     //  cert_pass = Cryptography.encrypt(cert_pass);
 
-                    var inst = new InstitutionsDTO(body.name, "institution", body.country);
+                    var inst = new InstitutionsDTO(body.name, "institution");
 
                     await InstitutionsAndProvidersPersistence.InsertInstitution(inst.toJSON(), async function (res) {
 
@@ -338,35 +342,55 @@ module.exports = {
         }
     },
 
-
-    async getCountries(callback) {
+    async getInstitutionsByCountry(country, callback) {
         try {
-            await InstitutionsAndProvidersPersistence.GetInstitution({}, async function (insts) {
 
-                var countryList = []
+            let institutionList = []
+            let institutionDBList = []
 
-                if (insts != null) {
-                    insts.forEach((inst) => {
-                        if (!countryList.includes(inst.country)) {
-                            countryList.push(inst.country)
-                        }
+            await RequestFactory.buildRequest(URLConstants.HEIAPIHostname, "", URLConstants.HEIAPIPath + "/" + country + "/hei", "", "GET", async function (resp) {
+
+                await InstitutionsAndProvidersPersistence.GetInstitution({ type: "institution" }, async function (dbInsts) {
+                    dbInsts.data.forEach((inst) => {
+                        institutionDBList.push(inst.name)
                     })
+                    console.log(institutionDBList);
 
+                    let institutionJSON = JSON.parse(resp.data);
+                    institutionJSON.data.forEach((inst) => {
+                        // institutionList.push(country.attributes.label)
+                    })
                     var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Countries were fetched");
-                    response.data = countryList;
+                    response.data = institutionList;
                     return callback(response);
-
-                } else {
-                    var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "No Institutions were found");
-
-                    response.data = [];
-                    return callback(response);
-                }
+                })
             })
 
         } catch (err) {
             console.log("Promise rejection error: " + err);
-            return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to insert Provider", "An error has occurred. Please login again."));
+            return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to get countries.", ""));
+
+        }
+    },
+
+    async getCountries(callback) {
+        try {
+
+            let countryList = []
+
+            await RequestFactory.buildRequest(URLConstants.HEIAPIHostname, "", URLConstants.HEIAPIPath, "", "GET", async function (resp) {
+                let countryJSON = JSON.parse(resp.data);
+                countryJSON.data.forEach((country) => {
+                    countryList.push({ name: country.attributes.label, id: country.id })
+                })
+                var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Countries were fetched");
+                response.data = countryList;
+                return callback(response);
+            })
+
+        } catch (err) {
+            console.log("Promise rejection error: " + err);
+            return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to get countries.", ""));
 
         }
     },

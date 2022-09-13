@@ -116,6 +116,14 @@ module.exports = function (app) {
 
     });
 
+    // Get institutions of a Country present in the module
+    app.get("/institutions/:country", RequestVerification.verifyAuthentication, function (req, res, _) {
+        StudentServiceService.getInstitutionsByCountry(req.params['country'], function (resp) {
+            res.json(resp.toJSON());
+        })
+
+    });
+
     // Validates if the Registration link is valid
     app.get("/certificate", function (req, res) {
         console.log('certificate');

@@ -1,9 +1,8 @@
 module.exports = class InstitutionDTO {
 
-    constructor(name, type, country) {
+    constructor(name, type) {
         this._name = name;
         this._type = type;
-        this._country = country;
     }
 
     get name() {
@@ -14,15 +13,10 @@ module.exports = class InstitutionDTO {
         return this._type;
     }
 
-    get country() {
-        return this._country;
-    }
-
     toJSON() {
         return {
             type: this.type,
             name: this.name,
-            country: this.country
         }
     }
 
