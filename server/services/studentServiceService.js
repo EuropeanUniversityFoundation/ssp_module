@@ -425,7 +425,7 @@ module.exports = {
                 return callback(response);
             })
             // })
-
+console.log('END');
         } catch (err) {
             console.log("Promise rejection error: " + err);
             return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to get countries.", ""));
