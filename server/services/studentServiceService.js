@@ -268,8 +268,6 @@ module.exports = {
                     await InstitutionOwnServicePersistence.GetService(inst._id, "", async function (res) {
 
                         processServices("", res, function (map) {
-                            var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Service was fetched");
-
                             var ssp_response = { ssp_response: [] }
                             map.forEach((value, key) => {
                                 var elem = { provider: key, services: value }
@@ -278,8 +276,7 @@ module.exports = {
 
                             console.log(JSON.stringify(ssp_response));
 
-                            response.data = ssp_response;
-                            finalData.push({ id: institutionAndProviderList[i].name, ssp_response: resp.data.ssp_response })
+                            finalData.push({ id: institutionAndProviderList[i].name, ssp_response: ssp_response })
                         })
 
                     })
