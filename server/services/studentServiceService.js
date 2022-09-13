@@ -298,6 +298,13 @@ module.exports = {
 
                 })
             })
+
+            if (institutionAndProviderList.length == 0) {
+                var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "No services were found");
+
+                response.data = finalData;
+                return callback(response);
+            }
         })
 
     },
