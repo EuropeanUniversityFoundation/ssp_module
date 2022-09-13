@@ -48,6 +48,21 @@ module.exports = {
         });
     },
 
+    async GetInstitutionsFilter(query, callback) {
+        MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
+            if (err) throw err;
+
+            var dbo = db.db(DatabaseVariables.DBNAME);
+
+            dbo.collection(DatabaseVariables.TABLE_INST_AND_PROVIDERS).find(query).toArray(function (err, res) {
+                if (err) throw err;
+                console.log("1 document fetched");
+                db.close();
+                return callback(res);
+            });
+        });
+    },
+
     async GetInstitutionNoCallback(query) {
         return new Promise(function (resolve, reject) {
             MongoClient.connect(DatabaseVariables.DBURL, function (err, db) {
