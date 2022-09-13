@@ -280,6 +280,10 @@ module.exports = {
                             console.log(JSON.stringify(ssp_response));
 
                             finalData.push({ id: ins.name, ssp_response: ssp_response })
+
+
+                            console.log('finalDataDEF');
+                            console.log(finalData);
                         })
 
                     })
