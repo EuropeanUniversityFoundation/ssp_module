@@ -411,6 +411,7 @@ module.exports = {
                                         erasmus_code: id.value,
                                         country: inst.attributes.country,
                                     }
+                                    console.log(instInfo);
                                     institutionList.push(instInfo)
                                 }
                             }
@@ -418,6 +419,8 @@ module.exports = {
                     })
                 })
                 var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Countries were fetched");
+                console.log('lisissis');
+                console.log(institutionList);
                 response.data = institutionList;
                 return callback(response);
             })
