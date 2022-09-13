@@ -220,7 +220,7 @@ module.exports = {
         console.log(country);
         console.log(city);
 
-        let p1 = await this.getInstitutionsByCountry(country, function (insts) {
+        let p1 = this.getInstitutionsByCountry(country, function (insts) {
 
             let institutionList = []
 
@@ -239,7 +239,7 @@ module.exports = {
             return Promise.resolve(institutionList)
         })
 
-        let p2 = await SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
+        let p2 = SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
 
             let providerList = []
 
@@ -255,10 +255,10 @@ module.exports = {
         })
 
 
-        await Promise.all([p1, p2]).then((values) => {
+        Promise.all([p1, p2]).then((values) => {
             console.log('values');
             console.log(values);
-            institutionAndProviderList = [...institutionList, ...providerList]
+            institutionAndProviderList = [...values[0], ...values[1]]
             console.log('final list');
             console.log(institutionAndProviderList);
             for (let i = 0; i < institutionAndProviderList.length; i++) {
