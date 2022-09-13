@@ -391,9 +391,9 @@ module.exports = {
             let institutionList = []
             let institutionDBList = []
 
-            await RequestFactory.buildRequest(URLConstants.HEIAPIHostname, "", URLConstants.HEIAPIPath + "/" + country + "/hei", "", "GET", function (resp) {
+            await RequestFactory.buildRequest(URLConstants.HEIAPIHostname, "", URLConstants.HEIAPIPath + "/" + country + "/hei", "", "GET", async function (resp) {
 
-                InstitutionsAndProvidersPersistence.GetInstitutionsFilter({ type: "institution" }, function (dbInsts) {
+                await InstitutionsAndProvidersPersistence.GetInstitutionsFilter({ type: "institution" }, function (dbInsts) {
                     dbInsts.forEach((inst) => {
                         institutionDBList.push(inst.name)
                     })
@@ -417,12 +417,12 @@ module.exports = {
                             }
                         })
                     })
+                    var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Countries were fetched");
+                    console.log('lisissis');
+                    console.log(institutionList);
+                    response.data = institutionList;
+                    return callback(response);
                 })
-                var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Countries were fetched");
-                console.log('lisissis');
-                console.log(institutionList);
-                response.data = institutionList;
-                return callback(response);
             })
             // })
             console.log('END');
