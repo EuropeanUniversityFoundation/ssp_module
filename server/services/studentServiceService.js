@@ -351,7 +351,6 @@ module.exports = {
             await RequestFactory.buildRequest(URLConstants.HEIAPIHostname, "", URLConstants.HEIAPIPath + "/" + country + "/hei", "", "GET", async function (resp) {
 
                 await InstitutionsAndProvidersPersistence.GetInstitutionsFilter({ type: "institution" }, async function (dbInsts) {
-                    console.log(dbInsts);
                     dbInsts.forEach((inst) => {
                         institutionDBList.push(inst.name)
                     })
@@ -359,13 +358,27 @@ module.exports = {
 
                     let institutionJSON = JSON.parse(resp.data);
                     institutionJSON.data.forEach((inst) => {
-                        // institutionList.push(country.attributes.label)
+                        inst.attributes.other_id.forEach((id) => {
+                            if (id.type == "erasmus") {
+                                if (institutionDBList.includes(id.value)) {
+                                    let instInfo = {
+                                        name: inst.attributes.label,
+                                        schac_code: inst.id,
+                                        city: inst.attributes.city,
+                                        erasmus_code: id.value,
+                                        country: inst.attributes.country,
+                                    }
+                                    institutionList.push(instInfo)
+                                }
+                            }
+                        })
                     })
-                    var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Countries were fetched");
-                    response.data = institutionList;
-                    return callback(response);
                 })
+                var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Countries were fetched");
+                response.data = institutionList;
+                return callback(response);
             })
+            // })
 
         } catch (err) {
             console.log("Promise rejection error: " + err);
