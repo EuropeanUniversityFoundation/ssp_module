@@ -391,9 +391,9 @@ module.exports = {
             let institutionList = []
             let institutionDBList = []
 
-            await RequestFactory.buildRequest(URLConstants.HEIAPIHostname, "", URLConstants.HEIAPIPath + "/" + country + "/hei", "", "GET", async function (resp) {
+            await RequestFactory.buildRequest(URLConstants.HEIAPIHostname, "", URLConstants.HEIAPIPath + "/" + country + "/hei", "", "GET", function (resp) {
 
-                await InstitutionsAndProvidersPersistence.GetInstitutionsFilter({ type: "institution" }, async function (dbInsts) {
+                InstitutionsAndProvidersPersistence.GetInstitutionsFilter({ type: "institution" }, function (dbInsts) {
                     dbInsts.forEach((inst) => {
                         institutionDBList.push(inst.name)
                     })
@@ -425,7 +425,7 @@ module.exports = {
                 return callback(response);
             })
             // })
-console.log('END');
+            console.log('END');
         } catch (err) {
             console.log("Promise rejection error: " + err);
             return callback(new ResponseDTO(http.StatusInternalServerError, false, "Failed to get countries.", ""));
