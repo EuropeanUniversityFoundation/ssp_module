@@ -259,9 +259,11 @@ module.exports = {
         await this.getInstitutionProviderList(country, city, async function (institutionAndProviderList) {
             for (let i = 0; i < institutionAndProviderList.length; i++) {
 
-                await InstitutionsAndProvidersPersistence.GetInstitution({ name: institutionAndProviderList[i] }, async function (inst) {
+                console.log('cylce new');
+                 console.log(institutionAndProviderList[i]);
+                await InstitutionsAndProvidersPersistence.GetInstitution({ name: institutionAndProviderList[i].erasmus_code }, async function (inst) {
 
-                    console.log("Found Stored Institution", inst.name);
+                    console.log("Found Stored Institution", inst);
 
                     await InstitutionOwnServicePersistence.GetService(inst._id, "", async function (res) {
 
