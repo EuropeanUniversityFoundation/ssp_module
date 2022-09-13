@@ -233,7 +233,9 @@ module.exports = {
         console.log(institutionAndProviderList);
 
         await SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
-            insts.data.forEach((prov) => {
+            console.log('insts Prov');
+            console.log(insts);
+            insts.forEach((prov) => {
                 institutionAndProviderList.push({ name: prov.name, erasmus_code: prov.name })
             })
         })
