@@ -123,8 +123,8 @@ module.exports = function (app) {
     });
 
     // Get institutions of a Country present in the module
-    app.get("/institutions/:country", RequestVerification.verifyAuthentication, function (req, res, _) {
-        StudentServiceService.getInstitutionsByCountry(req.params['country'], function (resp) {
+    app.get("/institutions", RequestVerification.verifyAuthentication, function (req, res, _) {
+        StudentServiceService.getInstitutionsByCountry(req.query.country, function (resp) {
             res.json(resp.toJSON());
         })
 
