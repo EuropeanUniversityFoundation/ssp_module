@@ -255,7 +255,7 @@ module.exports = {
         })
 
 
-        Promise.all([p1, p2]).then((values) => {
+        await Promise.all([p1, p2]).then((values) => {
             console.log('values');
             console.log(values);
             institutionAndProviderList = [values[0], values[1]]
@@ -272,7 +272,9 @@ module.exports = {
 
     },
 
+    async getInstitutionProviderList(country, city, callback) {
 
+    },
 
     async serviceDelete(id, callback) {
         try {
