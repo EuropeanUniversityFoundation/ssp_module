@@ -260,7 +260,7 @@ module.exports = {
             for (let i = 0; i < institutionAndProviderList.length; i++) {
 
                 console.log('cylce new');
-                 console.log(institutionAndProviderList[i]);
+                console.log(institutionAndProviderList[i]);
                 await InstitutionsAndProvidersPersistence.GetInstitution({ name: institutionAndProviderList[i].erasmus_code }, async function (inst) {
 
                     console.log("Found Stored Institution", inst);
@@ -282,9 +282,9 @@ module.exports = {
                     })
 
                 })
+                console.log('finalData');
+                console.log(finalData);
             }
-            console.log('finalData');
-            console.log(finalData);
         })
 
     },
