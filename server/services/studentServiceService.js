@@ -351,6 +351,7 @@ module.exports = {
             await RequestFactory.buildRequest(URLConstants.HEIAPIHostname, "", URLConstants.HEIAPIPath + "/" + country + "/hei", "", "GET", async function (resp) {
 
                 await InstitutionsAndProvidersPersistence.GetInstitution({ type: "institution" }, async function (dbInsts) {
+                    console.log(dbInsts);
                     dbInsts.forEach((inst) => {
                         institutionDBList.push(inst.name)
                     })
