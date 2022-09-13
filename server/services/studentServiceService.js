@@ -215,14 +215,15 @@ module.exports = {
 
     async getServicesOfInstitutionByCity(country, city, callback) {
         let finalData = []
-        let institutionList = []
-        let providerList = []
         let institutionAndProviderList = [];
 
         console.log(country);
         console.log(city);
 
         let p1 = await this.getInstitutionsByCountry(country, function (insts) {
+
+            let institutionList = []
+
             console.log('insts');
             console.log(insts.toJSON().data);
             insts.toJSON().data.forEach((hei) => {
@@ -234,9 +235,14 @@ module.exports = {
 
             console.log('institutionList');
             console.log(institutionList);
+
+            return Promise.resolve(institutionList)
         })
 
         let p2 = await SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
+
+            let providerList = []
+
             console.log('insts Prov');
             console.log(insts);
             insts.forEach((prov) => {
@@ -244,10 +250,14 @@ module.exports = {
             })
             console.log('providerList');
             console.log(providerList);
+
+            return Promise.resolve(providerList)
         })
 
 
-        await Promise.all([p1, p2]).then(() => {
+        Promise.all([p1, p2]).then((values) => {
+            console.log('values');
+            console.log(values);
             institutionAndProviderList = [...institutionList, ...providerList]
             console.log('final list');
             console.log(institutionAndProviderList);
