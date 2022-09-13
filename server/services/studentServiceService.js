@@ -228,26 +228,30 @@ module.exports = {
                     institutionAndProviderList.push({ name: hei.name, erasmus_code: hei.erasmus_code })
                 }
             })
-        })
-        console.log('list1');
-        console.log(institutionAndProviderList);
+        }).then(async () => {
+            console.log('list1');
+            console.log(institutionAndProviderList);
 
-        await SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
-            console.log('insts Prov');
-            console.log(insts);
-            insts.forEach((prov) => {
-                institutionAndProviderList.push({ name: prov.name, erasmus_code: prov.name })
+            await SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
+                console.log('insts Prov');
+                console.log(insts);
+                insts.forEach((prov) => {
+                    institutionAndProviderList.push({ name: prov.name, erasmus_code: prov.name })
+                })
+            }).then(async () => {
+                console.log('list2');
+                console.log(institutionAndProviderList);
+
+                for (let i = 0; i < institutionAndProviderList.length; i++) {
+                    this.getServicesOfInstitution(institutionAndProviderList[i], "", function (resp) {
+                        finalData.push({ id: institutionAndProviderList[i].name, ssp_response: resp.data.ssp_response })
+                    })
+                }
+
             })
         })
-        
-        console.log('list2');
-        console.log(institutionAndProviderList);
 
-        for (let i = 0; i < institutionAndProviderList.length; i++) {
-            this.getServicesOfInstitution(institutionAndProviderList[i], "", function (resp) {
-                finalData.push({ id: institutionAndProviderList[i].name, ssp_response: resp.data.ssp_response })
-            })
-        }
+
 
     },
 
