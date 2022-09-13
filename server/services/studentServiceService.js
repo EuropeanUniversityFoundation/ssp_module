@@ -257,11 +257,14 @@ module.exports = {
         console.log(city);
 
         await this.getInstitutionProviderList(country, city, async function (institutionAndProviderList) {
-            for (let i = 0; i < institutionAndProviderList.length; i++) {
+
+            institutionAndProviderList.forEach(async (ins) => {
+
 
                 console.log('cylce new');
-                console.log(institutionAndProviderList[i]);
-                await InstitutionsAndProvidersPersistence.GetInstitution({ name: institutionAndProviderList[i].erasmus_code }, async function (inst) {
+                console.log(ins);
+
+                await InstitutionsAndProvidersPersistence.GetInstitution({ name: ins.erasmus_code }, async function (inst) {
 
                     console.log("Found Stored Institution", inst);
 
@@ -276,7 +279,7 @@ module.exports = {
 
                             console.log(JSON.stringify(ssp_response));
 
-                            finalData.push({ id: institutionAndProviderList[i].name, ssp_response: ssp_response })
+                            finalData.push({ id: ins.name, ssp_response: ssp_response })
                         })
 
                     })
@@ -284,7 +287,7 @@ module.exports = {
                 })
                 console.log('finalData');
                 console.log(finalData);
-            }
+            })
         })
 
     },
