@@ -220,7 +220,7 @@ module.exports = {
         console.log(country);
         console.log(city);
 
-        await this.getInstitutionsByCountry(country, function (insts) {
+        let p1 = await this.getInstitutionsByCountry(country, function (insts) {
             console.log('insts');
             console.log(insts);
             insts.data.forEach((hei) => {
@@ -228,30 +228,29 @@ module.exports = {
                     institutionAndProviderList.push({ name: hei.name, erasmus_code: hei.erasmus_code })
                 }
             })
-        }).then(async () => {
+
             console.log('list1');
             console.log(institutionAndProviderList);
+        })
 
-            await SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
-                console.log('insts Prov');
-                console.log(insts);
-                insts.forEach((prov) => {
-                    institutionAndProviderList.push({ name: prov.name, erasmus_code: prov.name })
-                })
-            }).then(async () => {
-                console.log('list2');
-                console.log(institutionAndProviderList);
-
-                for (let i = 0; i < institutionAndProviderList.length; i++) {
-                    this.getServicesOfInstitution(institutionAndProviderList[i], "", function (resp) {
-                        finalData.push({ id: institutionAndProviderList[i].name, ssp_response: resp.data.ssp_response })
-                    })
-                }
-
+        let p2 = await SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
+            console.log('insts Prov');
+            console.log(insts);
+            insts.forEach((prov) => {
+                institutionAndProviderList.push({ name: prov.name, erasmus_code: prov.name })
             })
+            console.log('list2');
+            console.log(institutionAndProviderList);
         })
 
 
+        Promise.all([p1, p2]).then(() => {
+            for (let i = 0; i < institutionAndProviderList.length; i++) {
+                this.getServicesOfInstitution(institutionAndProviderList[i], "", function (resp) {
+                    finalData.push({ id: institutionAndProviderList[i].name, ssp_response: resp.data.ssp_response })
+                })
+            }
+        })
 
     },
 
