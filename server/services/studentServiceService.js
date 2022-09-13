@@ -236,7 +236,7 @@ module.exports = {
             console.log('institutionList');
             console.log(institutionList);
 
-            return Promise.resolve(institutionList)
+            return institutionList
         })
 
         let p2 = SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
@@ -251,14 +251,14 @@ module.exports = {
             console.log('providerList');
             console.log(providerList);
 
-            return Promise.resolve(providerList)
+            return providerList
         })
 
 
         Promise.all([p1, p2]).then((values) => {
             console.log('values');
             console.log(values);
-            institutionAndProviderList = [...values[0], ...values[1]]
+            institutionAndProviderList = [values[0], values[1]]
             console.log('final list');
             console.log(institutionAndProviderList);
             for (let i = 0; i < institutionAndProviderList.length; i++) {
