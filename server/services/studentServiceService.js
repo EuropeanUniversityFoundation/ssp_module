@@ -224,7 +224,7 @@ module.exports = {
             insts.toJSON().data.forEach((hei) => {
                 console.log(hei);
                 if (hei.city == city) {
-                    institutionList.push({ name: hei.name, erasmus_code: hei.erasmus_code })
+                    institutionList.push({ name: hei.name, type: "institution", erasmus_code: hei.erasmus_code })
                 }
             })
 
@@ -237,7 +237,7 @@ module.exports = {
                 console.log('insts Prov');
                 console.log(insts);
                 insts.forEach((prov) => {
-                    institutionList.push({ name: prov.name, erasmus_code: prov.name })
+                    institutionList.push({ name: prov.name, type: "provider", erasmus_code: prov.name })
                 })
                 console.log('providerList');
                 console.log(institutionList);
@@ -279,7 +279,7 @@ module.exports = {
 
                             console.log(JSON.stringify(ssp_response));
 
-                            finalData.push({ id: ins.name, ssp_response: ssp_response })
+                            finalData.push({ id: ins.name, type: ins.type, ssp_response: ssp_response })
 
 
                             console.log('finalDataDEF');
