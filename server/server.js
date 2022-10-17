@@ -35,7 +35,7 @@ sslvalidation.use((bodyParser.urlencoded({ extended: true })));
 https.createServer({
     cert: fs.readFileSync(path.join(__dirname, './services/certificates/sspfullchain.pem')),
     key: fs.readFileSync(path.join(__dirname, './services/certificates/sspprivkey.pem')),
-    ca: [fs.readFileSync(path.join(__dirname, './services/certificates/sspproviderca.crt'))],
+    ca: [fs.readFileSync(path.join(__dirname, './services/certificates/sspprovidercaunit.crt'))],
     requestCert: true,
     rejectUnauthorized: true,
 }, sslvalidation
