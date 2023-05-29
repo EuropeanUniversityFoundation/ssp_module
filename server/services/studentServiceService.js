@@ -464,6 +464,7 @@ module.exports = {
 
                     await SSPProviderPersistence.GetProvidersFilter({ country: country }, function (dbInsts) {
                         dbInsts.forEach((inst) => {
+                            console.log(inst);
                             sspDBList.push(inst.name)
                         })
 
