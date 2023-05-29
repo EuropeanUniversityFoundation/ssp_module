@@ -223,27 +223,34 @@ module.exports = {
             console.log(insts.toJSON().data);
             insts.toJSON().data.forEach((hei) => {
                 console.log(hei);
+
                 if (hei.city == city) {
-                    institutionList.push({ name: hei.name, type: "institution", erasmus_code: hei.erasmus_code })
+                    if (hei.erasmus_code == hei.name) {
+                        institutionList.push({ name: hei.name, type: "provider", erasmus_code: hei.erasmus_code })
+                    } else {
+                        institutionList.push({ name: hei.name, type: "institution", erasmus_code: hei.erasmus_code })
+                    }
                 }
             })
 
             console.log('institutionList');
             console.log(institutionList);
 
-            SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
+            return callback(institutionList)
+
+            // SSPProviderPersistence.GetProvidersFilter({ city: city }, function (insts) {
 
 
-                console.log('insts Prov');
-                console.log(insts);
-                insts.forEach((prov) => {
-                    institutionList.push({ name: prov.name, type: "provider", erasmus_code: prov.name })
-                })
-                console.log('providerList');
-                console.log(institutionList);
+            //     console.log('insts Prov');
+            //     console.log(insts);
+            //     insts.forEach((prov) => {
+            //         institutionList.push({ name: prov.name, type: "provider", erasmus_code: prov.name })
+            //     })
+            //     console.log('providerList');
+            //     console.log(institutionList);
 
-                return callback(institutionList)
-            })
+            //     return callback(institutionList)
+            // })
 
         })
 
@@ -445,38 +452,57 @@ module.exports = {
 
             let institutionList = []
             let institutionDBList = []
+            let sspDBList = []
 
             await RequestFactory.buildRequest(URLConstants.HEIAPIHostname, "", URLConstants.HEIAPIPath + "/" + country + "/hei", "", "GET", async function (resp) {
 
-                await InstitutionsAndProvidersPersistence.GetInstitutionsFilter({ type: "institution" }, function (dbInsts) {
+                await InstitutionsAndProvidersPersistence.GetInstitutionsFilter({ type: "institution" }, async function (dbInsts) {
                     dbInsts.forEach((inst) => {
                         institutionDBList.push(inst.name)
                     })
                     console.log(institutionDBList);
 
-                    let institutionJSON = JSON.parse(resp.data);
-                    institutionJSON.data.forEach((inst) => {
-                        inst.attributes.other_id.forEach((id) => {
-                            if (id.type == "erasmus") {
-                                if (institutionDBList.includes(id.value)) {
-                                    let instInfo = {
-                                        name: inst.attributes.label,
-                                        schac_code: inst.id,
-                                        city: inst.attributes.city,
-                                        erasmus_code: id.value,
-                                        country: inst.attributes.country,
-                                    }
-                                    console.log(instInfo);
-                                    institutionList.push(instInfo)
-                                }
-                            }
+                    await SSPProviderPersistence.GetProvidersFilter({ country: country }, function (dbInsts) {
+                        dbInsts.forEach((inst) => {
+                            sspDBList.push(inst.name)
                         })
+
+                        let institutionJSON = JSON.parse(resp.data);
+                        institutionJSON.data.forEach((inst) => {
+                            inst.attributes.other_id.forEach((id) => {
+                                if (id.type == "erasmus") {
+                                    if (institutionDBList.includes(id.value)) {
+                                        let instInfo = {
+                                            name: inst.attributes.label,
+                                            schac_code: inst.id,
+                                            city: inst.attributes.city,
+                                            erasmus_code: id.value,
+                                            country: inst.attributes.country,
+                                        }
+                                        console.log(instInfo);
+                                        institutionList.push(instInfo)
+                                    }
+                                }
+                            })
+                        })
+
+                        sspDBList.data.forEach((inst) => {
+                            let instInfo = {
+                                name: inst.name,
+                                schac_code: inst.domain,
+                                city: inst.city,
+                                erasmus_code: inst.name,
+                                country: inst.country,
+                            }
+                            console.log(instInfo);
+                            institutionList.push(instInfo)
+                        })
+                        var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Countries were fetched");
+                        console.log('lisissis');
+                        console.log(institutionList);
+                        response.data = institutionList;
+                        return callback(response);
                     })
-                    var response = new ResponseDTO(http.StatusOK, false, "Operation was successful", "Countries were fetched");
-                    console.log('lisissis');
-                    console.log(institutionList);
-                    response.data = institutionList;
-                    return callback(response);
                 })
             })
             // })
