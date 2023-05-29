@@ -487,7 +487,7 @@ module.exports = {
                             })
                         })
 
-                        sspDBList.data.forEach((inst) => {
+                        sspDBList.forEach((inst) => {
                             let instInfo = {
                                 name: inst.name,
                                 schac_code: inst.domain,
