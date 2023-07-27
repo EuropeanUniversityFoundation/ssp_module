@@ -17,7 +17,11 @@ const port = process.env.PORT || 8553;
 const sslPort = 8554;
 
 // var csrfProt = csrf({ cookie: true })
-app.use(cors());
+app.use(cors({
+  origin: ['https://uporto-dev.herokuapp.com', 'https://dashboard.sspmodule.it.auth.gr'],
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Authorization', 'Content-Type'],
+}));
 app.use(cookieParser())
 app.use(bodyParser.json());
 app.use((bodyParser.urlencoded({ extended: true })));
