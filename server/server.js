@@ -22,7 +22,7 @@ app.use(cookieParser())
 app.use(bodyParser.json());
 app.use((bodyParser.urlencoded({ extended: true })));
 
-
+//
 // Middlewares
 // app.use(csrfProt,function (req, res, next) {
 //     next();
